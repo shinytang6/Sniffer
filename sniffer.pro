@@ -26,12 +26,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    sniffer.cpp
+    sniffer.cpp \
+    capturethread.cpp
 
 HEADERS += \
         mainwindow.h \
     sniffer.h \
-    protocoltype.h
+    protocoltype.h \
+    capturethread.h
 
 FORMS += \
         mainwindow.ui
