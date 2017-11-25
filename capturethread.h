@@ -1,16 +1,17 @@
 #ifndef CAPTURETHREAD_H
 #define CAPTURETHREAD_H
+#include <QThread.h>
+#include "sniffer.h"
 
 class CaptureThread : public QThread
 {
     Q_OBJECT
 public:
-    CaptureThread(QObject *parent = 0)
-        : QThread(parent)
-    {
-    }
+    CaptureThread();
+    Sniffer *sniffer;
 protected:
     void run();
+
 
 };
 

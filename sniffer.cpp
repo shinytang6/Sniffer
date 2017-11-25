@@ -1,9 +1,9 @@
 #include "sniffer.h"
-#include "protocoltype.h"
 #include <QDebug>
 Sniffer::Sniffer()
 {
-
+    // 创建时就获取设备列表
+    findAllDevs();
 }
 
 Sniffer::~Sniffer()
@@ -94,19 +94,7 @@ void Sniffer::captureByCallBack(snifferCB func){
 }
 
 int Sniffer::captureOnce(){
-   int res =   pcap_next_ex( adhandle, &header, &pkt_data);
-   /* 将时间戳转换成可识别的格式 */
-   local_tv_sec = header->ts.tv_sec;
-   ltime=localtime(&local_tv_sec);
-   strftime( timestr, sizeof timestr, "%H:%M:%S", ltime);
-
-//   qDebug() << timestr << "," <<header->ts.tv_usec << "len: "<<header->len ;
-   // 获得 IP 协议头
-   iphdr *ih = (iphdr *)(pkt_data+ 14);
-   u_int ip_len = (ih->ver_ihl & 0xf) * 4;
-   qDebug() << "ip header length is " << ip_len<<endl ;
-   qDebug() << "ip is " << pkt_data+14<<endl ;
-   return res;
+   return   pcap_next_ex( adhandle, &header, &pkt_data);
 }
 
 void Sniffer::freeDevsMem(){

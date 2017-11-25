@@ -20,6 +20,9 @@ public:
     int	 captureOnce();												// 捕获一次网络数据包
     void captureByCallBack(snifferCB func);						// 以回调函数方式捕获数据
 
+    struct pcap_pkthdr *header;
+    const u_char *pkt_data;
+
     /*void createDevsStr(char *source, char *szFileName);				// WinPcap语法创建一个源字符串
     void freeNetDevsMem();											// 释放网络设备信息占据的堆内存
     bool openNetDev(char *szDevName);								// 根据名称打开网络设备
@@ -44,10 +47,6 @@ protected:
     struct bpf_program fcode;
     pcap_t			*adhandle;						// 当前打开的设备句柄（指针）
 
-    struct tm *ltime;
-    char timestr[16];
-    struct pcap_pkthdr *header;
-    const u_char *pkt_data;
-    time_t local_tv_sec;
+
 };
 #endif // SNIFFER_H

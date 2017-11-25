@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QDebug>
+#include "capturethread.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -15,9 +16,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_startCapture_clicked()
 {
-    sniffer.findAllDevs();
-    sniffer.openNetDev(6);
-    sniffer.setDevsFilter("ip and tcp");
-    sniffer.captureOnce();
+    CaptureThread *capturethread = new CaptureThread();
+    capturethread->sniffer = &sniffer;
+    // 启动线程
+    capturethread->start();
 }
 
