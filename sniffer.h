@@ -43,5 +43,11 @@ protected:
     int				iNetDevsNum;					// 网络设备数量
     struct bpf_program fcode;
     pcap_t			*adhandle;						// 当前打开的设备句柄（指针）
+
+    struct tm *ltime;
+    char timestr[16];
+    struct pcap_pkthdr *header;
+    const u_char *pkt_data;
+    time_t local_tv_sec;
 };
 #endif // SNIFFER_H

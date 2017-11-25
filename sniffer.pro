@@ -30,7 +30,8 @@ SOURCES += \
 
 HEADERS += \
         mainwindow.h \
-    sniffer.h
+    sniffer.h \
+    protocoltype.h
 
 FORMS += \
         mainwindow.ui
