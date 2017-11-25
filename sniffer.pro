@@ -25,10 +25,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    sniffer.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    sniffer.h
 
 FORMS += \
         mainwindow.ui
+
+INCLUDEPATH += "G:/WpdPack_4_1_2/WpdPack/Include"
+LIBS += G:/WpdPack_4_1_2/WpdPack/Lib/wpcap.lib G:/WpdPack_4_1_2/WpdPack/Lib/packet.lib
+
+
+CONFIG +=console
