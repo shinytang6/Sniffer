@@ -1,6 +1,31 @@
 #ifndef PROTOCOLTYPE_H
 #define PROTOCOLTYPE_H
 
+// IP 协议头 协议(Protocol) 字段标识含义
+//      协议      协议号
+#define IP_SIG			00
+#define ICMP_SIG		01
+#define IGMP_SIG		02
+#define GGP_SIG			03
+#define IP_ENCAP_SIG	04
+#define ST_SIG			05
+#define TCP_SIG			06
+#define EGP_SIG			08
+#define PUP_SIG			12
+#define UDP_SIG			17
+#define HMP_SIG			20
+#define XNS_IDP_SIG		22
+#define RDP_SIG			27
+#define TP4_SIG			29
+#define XTP_SIG			36
+#define DDP_SIG			37
+#define IDPR_CMTP_SIG	39
+#define RSPF_SIG		73
+#define VMTP_SIG		81
+#define OSPFIGP_SIG		89
+#define IPIP_SIG		94
+#define ENCAP_SIG		98
+
 
 //Mac帧头 占14个字节
 typedef struct ethhdr
