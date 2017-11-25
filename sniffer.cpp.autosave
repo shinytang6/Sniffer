@@ -105,7 +105,7 @@ int Sniffer::captureOnce(){
    iphdr *ih = (iphdr *)(pkt_data+ 14);
    u_int ip_len = (ih->ver_ihl & 0xf) * 4;
    qDebug() << "ip header length is " << ip_len<<endl ;
-   qDebug() << "ip is " << pkt_data+14<<endl ;
+   qDebug() << "ip is " << <<endl ;
    return res;
 }
 

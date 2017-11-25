@@ -17,7 +17,7 @@ void MainWindow::on_startCapture_clicked()
 {
     sniffer.findAllDevs();
     sniffer.openNetDev(6);
-    sniffer.setDevsFilter("ip and udp");
+    sniffer.setDevsFilter("ip and tcp");
     sniffer.captureOnce();
 }
 

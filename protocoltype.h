@@ -24,75 +24,53 @@ typedef struct arphdr
     u_char ar_destip[4];                //接收方IP
 };
 
-//定义IP头
+// IPv4头部（20字节）
 typedef struct iphdr
 {
-    u_char ver_ihl;
-    u_char tos;             //TOS 服务类型
-    u_short tlen;           //包总长 u_short占两个字节
-    u_short id;             //标识
-    u_short frag_off;   //片位移
-    u_char ttl;             //生存时间
-    u_char proto;       //协议
-    u_short check;      //校验和
-    u_int saddr;            //源地址
-    u_int daddr;            //目的地址
-    u_int   op_pad;     //选项等
+    unsigned char		ver_ihl;        // 版本 (4 bits) + 首部长度 (4 bits)
+    unsigned char		tos;            // 服务类型(Type of service)
+    unsigned short		tlen;           // 总长(Total length)
+    unsigned short		identification; // 标识(Identification)
+    unsigned short		flags_fo;       // 标志位(Flags) (3 bits) + 段偏移量(Fragment offset) (13 bits)
+    unsigned char		ttl;            // 存活时间(Time to live)
+    unsigned char		proto;          // 协议(Protocol)
+    unsigned short		crc;			// 首部校验和(Header checksum)
+    unsigned char		saddr[4];		// 源地址(Source address)
+    unsigned char		daddr[4];		// 目标地址(Destination address)
+    unsigned int		op_pad;         // 选项与填充(Option + Padding)
 };
 
-//定义TCP头
-typedef struct tcphdr
-{
-    u_short sport;                          //源端口地址  16位
-    u_short dport;                          //目的端口地址 16位
-    u_int seq;                                  //序列号 32位
-    u_int ack_seq;                          //确认序列号
-#if defined(LITTLE_ENDIAN)
-    u_short res1:4,
-                doff:4,
-                fin:1,
-                syn:1,
-                rst:1,
-                psh:1,
-                ack:1,
-                urg:1,
-                ece:1,
-                cwr:1;
-#elif defined(BIG_ENDIAN)
-    u_short doff:4,
-                res1:4,
-                cwr:1,
-                ece:1,
-                urg:1,
-                ack:1,
-                psh:1,
-                rst:1,
-                syn:1,
-                fin:1;
-#endif
-    u_short window;                 //窗口大小 16位
-    u_short check;                      //校验和 16位
-    u_short urg_ptr;                    //紧急指针 16位
-    u_int opt;                              //选项
-};
-
-
-//定义UDP头
-typedef struct udphdr
-{
-    u_short sport;      //源端口  16位
-    u_short dport;      //目的端口 16位
-    u_short len;            //数据报长度 16位
-    u_short check;      //校验和 16位
-};
-
-//定义ICMP
+// ICMP头部（4字节）
 typedef struct icmphdr
 {
-    u_char type;            //8位 类型
-    u_char code;            //8位 代码
-    u_char seq;         //序列号 8位
-    u_char chksum;      //8位校验和
+    unsigned char	icmp_type;	// 类型
+    unsigned char	code;		// 代码
+    unsigned short	chk_sum;	// 16位检验和
+}icmp_header;
+
+// TCP头部（20字节）
+typedef struct tcphdr
+{
+    unsigned short	src_port;			// 源端口号
+    unsigned short	dst_port;			// 目的端口号
+    unsigned int	seq_no;				// 序列号
+    unsigned int	ack_no;				// 确认号
+    unsigned char	thl:4;				// tcp头部长度
+    unsigned char	reserved_1:4;		// 保留6位中的4位首部长度
+    unsigned char	reseverd_2:2;		// 保留6位中的2位
+    unsigned char	flag:6;				// 6位标志
+    unsigned short	wnd_size;			// 16位窗口大小
+    unsigned short	chk_sum;			// 16位TCP检验和
+    unsigned short	urgt_p;				// 16为紧急指针
+};
+
+// UDP头部（8字节）
+typedef struct udphdr
+{
+    unsigned short	sport;		// 源端口(Source port)
+    unsigned short	dport;		// 目的端口(Destination port)
+    unsigned short	len;		// UDP数据包长度(Datagram length)
+    unsigned short	crc;		// 校验和(Checksum)
 };
 
 //定义IPv6
