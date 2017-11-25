@@ -55,7 +55,7 @@ bool Sniffer::setDevsFilter(char *szFilter)
     /* 检查数据链路层，为了简单，我们只考虑以太网 */
         if(pcap_datalink(adhandle) != DLT_EN10MB)
         {
-            fprintf(stderr,"\nThis program works only on Ethernet networks.\n");
+            qDebug() <<"\nThis program works only on Ethernet networks.\n" ;
             /* 释放设备列表 */
             freeDevsMem();
             return -1;
@@ -69,7 +69,7 @@ bool Sniffer::setDevsFilter(char *szFilter)
             /* 如果接口没有地址，那么我们假设一个C类的掩码 */
             netmask=0xffffff;
 
-
+        qDebug() <<"netmask is "<< adhandle<<endl;
         //编译过滤器
         if (pcap_compile(adhandle, &fcode, szFilter, 1, netmask) <0 )
         {
@@ -89,6 +89,7 @@ bool Sniffer::setDevsFilter(char *szFilter)
 void Sniffer::captureByCallBack(snifferCB func){
     /* 开始捕捉 */
     pcap_loop(adhandle, 0, func, NULL);
+    qDebug() << adhandle;
 }
 
 void Sniffer::freeDevsMem(){
@@ -97,3 +98,4 @@ void Sniffer::freeDevsMem(){
         alldevs = NULL;
     }
 }
+
