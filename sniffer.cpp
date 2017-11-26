@@ -124,9 +124,26 @@ void Sniffer::analyze_frame(const u_char *pkt_data){
 
 void Sniffer::analyze_ipv4(const u_char *pkt_data){
     // 获得 IP 协议头
-    qDebug() <<  "hello ipv4"<<endl ;
     iphdr *ih = (iphdr *)(pkt_data+ 14);
     u_int ip_len = (ih->ver_ihl & 0xf) * 4;
+
+    unsigned short sport, dport;
+    switch (ih->proto) {
+        case TCP_SIG:{
+            tcphdr *th = (tcphdr *)((unsigned char *)ih + ip_len);		// 获得 TCP 协议头
+            sport = ntohs(th->sport);								// 获得源端口和目的端口
+            dport = ntohs(th->dport);
+            break;
+            }
+        case UDP_SIG:{
+            udphdr *uh = (udphdr *)((unsigned char *)ih + ip_len);		// 获得 UDP 协议头
+            sport = ntohs(uh->sport);								// 获得源端口和目的端口
+            dport = ntohs(uh->dport);
+            break;
+            }
+    }
+    qDebug("Source: %d.%d.%d.%d : %d ",ih->saddr[0], ih->saddr[1], ih->saddr[2], ih->saddr[3],sport);
+    qDebug("Destination: %d.%d.%d.%d : %d ",ih->daddr[0], ih->daddr[1], ih->daddr[2], ih->daddr[3],dport);
     qDebug() <<  "len: "<<ip_len ;
 
 }

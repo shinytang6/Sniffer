@@ -76,8 +76,8 @@ typedef struct icmphdr
 // TCP头部（20字节）
 typedef struct tcphdr
 {
-    unsigned short	src_port;			// 源端口号
-    unsigned short	dst_port;			// 目的端口号
+    unsigned short	sport;			// 源端口号
+    unsigned short	dport;			// 目的端口号
     unsigned int	seq_no;				// 序列号
     unsigned int	ack_no;				// 确认号
     unsigned char	thl:4;				// tcp头部长度
