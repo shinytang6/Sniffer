@@ -109,10 +109,10 @@ void Sniffer::analyze_frame(const u_char *pkt_data){
     ethhdr *eth = (ethhdr*)(pkt_data);
     switch (ntohs(eth->type)) {
         case 0x0806 :
-            analyze_ipv4(pkt_data);
+            analyze_arp(pkt_data);
             break;
         case 0x0800 :
-            analyze_arp(pkt_data);
+            analyze_ipv4(pkt_data);
             break;
         case 0x86dd :
             analyze_ipv6(pkt_data);
@@ -123,16 +123,20 @@ void Sniffer::analyze_frame(const u_char *pkt_data){
 
 
 void Sniffer::analyze_ipv4(const u_char *pkt_data){
-
+    // 获得 IP 协议头
+    qDebug() <<  "hello ipv4"<<endl ;
+    iphdr *ih = (iphdr *)(pkt_data+ 14);
+    u_int ip_len = (ih->ver_ihl & 0xf) * 4;
+    qDebug() <<  "len: "<<ip_len ;
 
 }
 
 void Sniffer::analyze_ipv6(const u_char *pkt_data){
 
-
+     qDebug() <<  "hello ipv6"<<endl ;
 }
 
 void Sniffer::analyze_arp(const u_char *pkt_data){
 
-
+     qDebug() <<  "hello arp"<<endl ;
 }
