@@ -107,9 +107,20 @@ void Sniffer::freeDevsMem(){
     }
 }
 
-void Sniffer::analyze_frame(const u_char *pkt_data){
+void Sniffer::analyze_frame(const u_char *pkt_data,struct pcap_pkthdr *header){
+    struct tm *ltime;
+    char timestr[16];
+    time_t local_tv_sec;
+
     ethhdr *eth = (ethhdr*)(pkt_data);
     tempSnifferData *tmpData = new tempSnifferData();
+
+    /* 将时间戳转换成可识别的格式 */
+    local_tv_sec = header->ts.tv_sec;
+    ltime=localtime(&local_tv_sec);
+    strftime( timestr, sizeof timestr, "%H:%M:%S", ltime);
+    tmpData->strTime = timestr;
+
     switch (ntohs(eth->type)) {
         case 0x0806 :
             analyze_arp(pkt_data,tmpData);
@@ -144,14 +155,17 @@ void Sniffer::analyze_ipv4(const u_char *pkt_data,tempSnifferData *tmpData){
 
     switch (ih->proto) {
         case TCP_SIG:{
+            tmpData->strProto = "TCP";
             analyze_tcp(pkt_data,tmpData);
             break;
             }
         case UDP_SIG:{
+            tmpData->strProto = "UDP";
             analyze_udp(pkt_data,tmpData);
             break;
             }
         case ICMP_SIG:{
+            tmpData->strProto = "ICMP";
             analyze_icmp(pkt_data,tmpData);
             break;
         }

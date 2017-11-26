@@ -34,7 +34,7 @@ public:
     int	 captureOnce();												// 捕获一次网络数据包
     void captureByCallBack(snifferCB func);						// 以回调函数方式捕获数据
 
-    void analyze_frame(const u_char *pkt_data);     // 分析Mac帧
+    void analyze_frame(const u_char *pkt_data,struct pcap_pkthdr *header);     // 分析Mac帧
     void analyze_ipv4(const u_char *pkt_data,tempSnifferData *tmpData);      // 分析ipv4
     void analyze_ipv6(const u_char *pkt_data,tempSnifferData *tmpData);      // 分析ipv6
     void analyze_arp(const u_char *pkt_data,tempSnifferData *tmpData);       // 分析arp
