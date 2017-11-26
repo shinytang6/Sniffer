@@ -4,7 +4,20 @@
 #define WPCAP
 #define HAVE_REMOTE
 #include <remote-ext.h>
-#include<windows.h>
+#include <windows.h>
+#include <string>
+
+// 捕获的数据结构
+struct tempSnifferData
+{
+    std::string	strNum;			// 序号
+    std::string strTime;		// 时间
+    std::string strSIP;			// 源 IP 地址，格式 IP:port
+    std::string strDIP;			// 目标 IP 地址，格式 IP:port
+    std::string strProto;		// 使用的协议
+    int	strLength;		// 数据长度
+    std::string strData;		// 原始数据
+};
 
 class Sniffer
 {
@@ -22,9 +35,11 @@ public:
     void captureByCallBack(snifferCB func);						// 以回调函数方式捕获数据
 
     void analyze_frame(const u_char *pkt_data);     // 分析Mac帧
-    void analyze_ipv4(const u_char *pkt_data);      // 分析ipv4
-    void analyze_ipv6(const u_char *pkt_data);      // 分析ipv6
-    void analyze_arp(const u_char *pkt_data);       // 分析arp
+    void analyze_ipv4(const u_char *pkt_data,tempSnifferData *tmpData);      // 分析ipv4
+    void analyze_ipv6(const u_char *pkt_data,tempSnifferData *tmpData);      // 分析ipv6
+    void analyze_arp(const u_char *pkt_data,tempSnifferData *tmpData);       // 分析arp
+    void analyze_tcp(const u_char *pkt_data,tempSnifferData *tmpData);       // 分析tcp
+    void analyze_udp(const u_char *pkt_data,tempSnifferData *tmpData);       // 分析udp
 
     struct pcap_pkthdr *header;
     const u_char *pkt_data;
