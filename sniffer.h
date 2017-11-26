@@ -4,6 +4,7 @@
 #define WPCAP
 #define HAVE_REMOTE
 #include <remote-ext.h>
+#include<windows.h>
 
 class Sniffer
 {

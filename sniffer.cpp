@@ -1,5 +1,6 @@
 #include "sniffer.h"
 #include <QDebug>
+
 Sniffer::Sniffer()
 {
     // 创建时就获取设备列表

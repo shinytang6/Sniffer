@@ -41,5 +41,5 @@ FORMS += \
 INCLUDEPATH += "G:/WpdPack_4_1_2/WpdPack/Include"
 LIBS += G:/WpdPack_4_1_2/WpdPack/Lib/wpcap.lib G:/WpdPack_4_1_2/WpdPack/Lib/packet.lib
 
-
+LIBS += -lpthread libwsock32 libws2_32
 CONFIG +=console
