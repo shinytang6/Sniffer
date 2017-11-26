@@ -151,6 +151,10 @@ void Sniffer::analyze_ipv4(const u_char *pkt_data,tempSnifferData *tmpData){
             analyze_udp(pkt_data,tmpData);
             break;
             }
+        case ICMP_SIG:{
+            analyze_icmp(pkt_data,tmpData);
+            break;
+        }
     }
 
 }
@@ -193,4 +197,11 @@ void Sniffer::analyze_udp(const u_char *pkt_data,tempSnifferData *tmpData){
     std::cout<<"dport:"<<ntohs(uh->dport)<<"\n";
     std::cout<<"source:"<<tmpData->strSIP<<"\n";
     std::cout<<"dest:"<<tmpData->strDIP<<"\n";
+}
+
+void Sniffer::analyze_icmp(const u_char *pkt_data,tempSnifferData *tmpData){
+
+
+    std::cout<<"protocol: ICMP"<<"\n";
+
 }

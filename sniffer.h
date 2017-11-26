@@ -40,7 +40,7 @@ public:
     void analyze_arp(const u_char *pkt_data,tempSnifferData *tmpData);       // 分析arp
     void analyze_tcp(const u_char *pkt_data,tempSnifferData *tmpData);       // 分析tcp
     void analyze_udp(const u_char *pkt_data,tempSnifferData *tmpData);       // 分析udp
-
+    void analyze_icmp(const u_char *pkt_data,tempSnifferData *tmpData);       // 分析icmp
     struct pcap_pkthdr *header;
     const u_char *pkt_data;
 
