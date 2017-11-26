@@ -21,19 +21,19 @@ void CaptureThread::run(){
     local_tv_sec = sniffer->header->ts.tv_sec;
     ltime=localtime(&local_tv_sec);
     strftime( timestr, sizeof timestr, "%H:%M:%S", ltime);
-
-    ethhdr *eth = (ethhdr*)(sniffer->pkt_data);
-    switch (ntohs(eth->type)) {
-        case 0x0806 :
-            qDebug() << "arp"<<ntohs(eth->type)<<endl;
-            break;
-        case 0x0800 :
-            qDebug() << "ipv4"<<ntohs(eth->type)<<endl;
-            break;
-        case 0x86dd :
-            qDebug() <<"ipv6" <<ntohs(eth->type)<<endl;
-            break;
-    }
+    sniffer->analyze_frame(sniffer->pkt_data);
+//    ethhdr *eth = (ethhdr*)(sniffer->pkt_data);
+//    switch (ntohs(eth->type)) {
+//        case 0x0806 :
+//            qDebug() << "arp"<<ntohs(eth->type)<<endl;
+//            break;
+//        case 0x0800 :
+//            qDebug() << "ipv4"<<ntohs(eth->type)<<endl;
+//            break;
+//        case 0x86dd :
+//            qDebug() <<"ipv6" <<ntohs(eth->type)<<endl;
+//            break;
+//    }
 
 //    qDebug() <<  eth->type<<endl;
 //    // 获得 IP 协议头

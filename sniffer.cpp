@@ -1,6 +1,6 @@
 #include "sniffer.h"
 #include <QDebug>
-
+#include "protocoltype.h"
 Sniffer::Sniffer()
 {
     // 创建时就获取设备列表
@@ -105,3 +105,34 @@ void Sniffer::freeDevsMem(){
     }
 }
 
+void Sniffer::analyze_frame(const u_char *pkt_data){
+    ethhdr *eth = (ethhdr*)(pkt_data);
+    switch (ntohs(eth->type)) {
+        case 0x0806 :
+            analyze_ipv4(pkt_data);
+            break;
+        case 0x0800 :
+            analyze_arp(pkt_data);
+            break;
+        case 0x86dd :
+            analyze_ipv6(pkt_data);
+            break;
+    }
+
+}
+
+
+void Sniffer::analyze_ipv4(const u_char *pkt_data){
+
+
+}
+
+void Sniffer::analyze_ipv6(const u_char *pkt_data){
+
+
+}
+
+void Sniffer::analyze_arp(const u_char *pkt_data){
+
+
+}
