@@ -1,6 +1,7 @@
 #ifndef CAPTURETHREAD_H
 #define CAPTURETHREAD_H
 #include <QThread.h>
+#include <QTreeView>
 #include "sniffer.h"
 
 class CaptureThread : public QThread
@@ -9,6 +10,7 @@ class CaptureThread : public QThread
 public:
     CaptureThread();
     Sniffer *sniffer;
+    QTreeView *treeView;
 protected:
     void run();
 

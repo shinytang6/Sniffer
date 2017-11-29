@@ -27,13 +27,15 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     sniffer.cpp \
-    capturethread.cpp
+    capturethread.cpp \
+    maintreeview.cpp
 
 HEADERS += \
         mainwindow.h \
     sniffer.h \
     protocoltype.h \
-    capturethread.h
+    capturethread.h \
+    maintreeview.h
 
 FORMS += \
         mainwindow.ui

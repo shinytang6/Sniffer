@@ -63,10 +63,10 @@
    <widget class="QTreeWidget" name="treeWidget">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>110</y>
-      <width>1091</width>
-      <height>331</height>
+      <x>650</x>
+      <y>310</y>
+      <width>541</width>
+      <height>131</height>
      </rect>
     </property>
     <column>
@@ -99,6 +99,21 @@
       <string>发送长度</string>
      </property>
     </column>
+    <item>
+     <property name="text">
+      <string>ewq</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QTreeView" name="treeView">
+    <property name="geometry">
+     <rect>
+      <x>85</x>
+      <y>111</y>
+      <width>731</width>
+      <height>241</height>
+     </rect>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
