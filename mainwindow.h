@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStandardItemModel>
 #include "sniffer.h"
+#include "iostream"
 namespace Ui {
 class MainWindow;
 }
@@ -17,10 +19,13 @@ public:
 
 private slots:
     void on_startCapture_clicked();
-
+    void receiveData(QString data1,QString data2,QString data3,QString data4);
 private:
     Ui::MainWindow *ui;
     Sniffer sniffer;
+    QStandardItemModel *mainModel;
+    int iPosition;
+
 };
 
 #endif // MAINWINDOW_H

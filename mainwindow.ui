@@ -108,10 +108,10 @@
    <widget class="QTreeView" name="treeView">
     <property name="geometry">
      <rect>
-      <x>85</x>
-      <y>111</y>
-      <width>731</width>
-      <height>241</height>
+      <x>30</x>
+      <y>120</y>
+      <width>1261</width>
+      <height>261</height>
      </rect>
     </property>
    </widget>

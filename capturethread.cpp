@@ -3,51 +3,107 @@
 #include <QDebug>
 #include <winsock2.h>
 #include <QStandardItem>
+#include <iostream>
 CaptureThread::CaptureThread(){
 
 }
 
 void CaptureThread::run(){
-
     sniffer->openNetDev(6);
     sniffer->setDevsFilter("ip");
+
     sniffer->captureOnce();
 
-
-    sniffer->analyze_frame(sniffer->pkt_data,sniffer->header);
-    QStandardItemModel *mainModel;
-
-    mainModel = new QStandardItemModel();
-    mainModel->setColumnCount(6);
-    mainModel->setHeaderData(0, Qt::Horizontal, tr("序号"));
-    mainModel->setHeaderData(1, Qt::Horizontal, tr("时间"));
-    mainModel->setHeaderData(2, Qt::Horizontal, tr("源IP地址"));
-    mainModel->setHeaderData(3, Qt::Horizontal, tr("目标IP地址"));
-    mainModel->setHeaderData(4, Qt::Horizontal, tr("协议"));
-    mainModel->setHeaderData(5, Qt::Horizontal, tr("发送长度"));
-    treeView->setModel(mainModel);
-    QStandardItem *item;
-    item = new QStandardItem("5");
-    mainModel->setItem(0, 0, item);
-
-    item = new QStandardItem("hah");
-    mainModel->setItem(0, 1, item);
-     item = new QStandardItem("127.0.1.1");
-        mainModel->setItem(0, 2, item);
-        item = new QStandardItem("197.235.5.2");
-        mainModel->setItem(0, 3, item);
-        item = new QStandardItem("ip");
-        mainModel->setItem(0, 4, item);
-        item = new QStandardItem("20");
-        mainModel->setItem(0, 5, item);
-
-
-
+//    sniffer->analyze_frame(sniffer->pkt_data,sniffer->header);
 //    while(sniffer->captureOnce() >= 0){
 //        local_tv_sec = sniffer->header->ts.tv_sec;
 //        ltime=localtime(&local_tv_sec);
 //        strftime( timestr, sizeof timestr, "%H:%M:%S", ltime);
 //        sniffer->analyze_frame(sniffer->pkt_data);
 //    }
+
+    struct tm *ltime;
+    char timestr[16];
+    time_t local_tv_sec;
+
+    ethhdr *eth = (ethhdr*)(sniffer->pkt_data);
+    tempSnifferData *tmpData = new tempSnifferData();
+
+    /* 将时间戳转换成可识别的格式 */
+    local_tv_sec = sniffer->header->ts.tv_sec;
+    ltime=localtime(&local_tv_sec);
+    strftime( timestr, sizeof timestr, "%H:%M:%S", ltime);
+    tmpData->strTime = timestr;
+
+    switch (ntohs(eth->type)) {
+        case 0x0806 :{
+//            analyze_arp(pkt_data,tmpData);
+            std::cout<<"protocol: arp"<<"\n";
+            break;
+        }
+        case 0x0800 :{
+            // 获得 IP 协议头
+            iphdr *ih = (iphdr *)(sniffer->pkt_data+ 14);
+            u_int ip_len = (ih->ver_ihl & 0xf) * 4;
+            char len[10];
+            sprintf( len, "%d", ip_len);
+            tmpData->strLength = len;
+            char szSaddr[24], szDaddr[24];
+            sprintf(szSaddr,"%d.%d.%d.%d:",ih->saddr[0], ih->saddr[1], ih->saddr[2], ih->saddr[3]);
+            sprintf(szDaddr," %d.%d.%d.%d:",ih->daddr[0], ih->daddr[1], ih->daddr[2], ih->daddr[3]);
+            tmpData->strSIP = szSaddr;
+            tmpData->strDIP = szDaddr;
+            std::cout<<"protocol: ipv4"<<"\n";
+            std::cout<<"source:"<<tmpData->strSIP<<"\n";
+            std::cout<<"dest:"<<tmpData->strDIP<<"\n";
+            switch (ih->proto) {
+                case TCP_SIG:{
+                    tmpData->strProto = "TCP";
+                    char sport[10], dport[10];
+                    tcphdr *th = (tcphdr *)(sniffer->pkt_data + 14 + ip_len);		// 获得 TCP 协议头
+                    sprintf( sport, "%d", ntohs(th->sport)); // 源端口
+                    sprintf( dport, "%d", ntohs(th->dport)); // 目的端口
+                    tmpData->strSIP = tmpData->strSIP + sport;
+                    tmpData->strDIP = tmpData->strDIP + dport;
+
+                    std::cout<<"protocol: TCP"<<"\n";
+                    std::cout<<"sport:"<<ntohs(th->sport)<<"\n";
+                    std::cout<<"dport:"<<ntohs(th->dport)<<"\n";
+                    std::cout<<"source:"<<tmpData->strSIP<<"\n";
+                    std::cout<<"dest:"<<tmpData->strDIP<<"\n";
+                    std::cout<<"lengthaaa:"<<tmpData->strLength<<"\n";
+                    emit sendData(QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
+                    break;
+                    }
+                case UDP_SIG:{
+                    tmpData->strProto = "UDP";
+                    char sport[10], dport[10];
+                    udphdr *uh = (udphdr *)(sniffer->pkt_data + 14 + ip_len);		// 获得 UDP 协议头
+                    sprintf( sport, "%d", ntohs(uh->sport)); // 源端口
+                    sprintf( dport, "%d", ntohs(uh->dport)); // 目的端口
+                    tmpData->strSIP = tmpData->strSIP + sport;
+                    tmpData->strDIP = tmpData->strDIP + dport;
+
+                    std::cout<<"protocol: UDP"<<"\n";
+                    std::cout<<"sport:"<<ntohs(uh->sport)<<"\n";
+                    std::cout<<"dport:"<<ntohs(uh->dport)<<"\n";
+                    std::cout<<"source:"<<tmpData->strSIP<<"\n";
+                    std::cout<<"dest:"<<tmpData->strDIP<<"\n";
+                    break;
+                    }
+                case ICMP_SIG:{
+                    tmpData->strProto = "ICMP";
+                    std::cout<<"protocol: ICMP"<<"\n";
+                    break;
+                }
+            }
+            break;
+        }
+        case 0x86dd :{
+//            analyze_ipv6(pkt_data,tmpData);
+            std::cout<<"protocol: ipv6"<<"\n";
+            break;
+        }
+    }
 
 }

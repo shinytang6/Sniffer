@@ -3,22 +3,23 @@
 
 #include <QMainWindow>
 #include "sniffer.h"
-namespace Ui {
-class MainTreeView;
-}
+#include <QTreeView>
+#include <QStandardItemModel>
 
-class MainTreeView : public QMainWindow
+class MainTreeView :public QTreeView
 {
     Q_OBJECT
 
 public:
-    explicit MainTreeView(QWidget *parent = 0);
+    MainTreeView(QTreeView *treeView);
     ~MainTreeView();
+
+    QStandardItemModel *mainModel;
+    void addOneCaptureItem();
 
 private slots:
 
 private:
-    Ui::MainTreeView *ui;
     Sniffer sniffer;
 };
 

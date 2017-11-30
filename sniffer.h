@@ -15,7 +15,7 @@ struct tempSnifferData
     std::string strSIP;			// 源 IP 地址，格式 IP:port
     std::string strDIP;			// 目标 IP 地址，格式 IP:port
     std::string strProto;		// 使用的协议
-    int	strLength;		// 数据长度
+    std::string	strLength;		// 数据长度
     std::string strData;		// 原始数据
 };
 
@@ -41,6 +41,7 @@ public:
     void analyze_tcp(const u_char *pkt_data,tempSnifferData *tmpData);       // 分析tcp
     void analyze_udp(const u_char *pkt_data,tempSnifferData *tmpData);       // 分析udp
     void analyze_icmp(const u_char *pkt_data,tempSnifferData *tmpData);       // 分析icmp
+
     struct pcap_pkthdr *header;
     const u_char *pkt_data;
 
@@ -67,7 +68,6 @@ protected:
     int				iNetDevsNum;					// 网络设备数量
     struct bpf_program fcode;
     pcap_t			*adhandle;						// 当前打开的设备句柄（指针）
-
 
 };
 #endif // SNIFFER_H
