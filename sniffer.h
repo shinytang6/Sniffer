@@ -26,7 +26,7 @@ public:
     ~Sniffer();
     typedef void (*snifferCB)(u_char *, const struct pcap_pkthdr *, const u_char *);
 
-    void findAllDevs(char *szFlag = PCAP_SRC_IF_STRING);			// 获取全部网络设备列表信息
+    pcap_if_t * findAllDevs(char *szFlag = PCAP_SRC_IF_STRING);			// 获取全部网络设备列表信息
     void freeDevsMem();											// 释放网络设备信息占据的堆内存
     void openNetDev(char *szDevName);								// 根据名称打开网络设备
     bool openNetDev(int iDevNum);									// 根据序号打开网络设备
@@ -68,6 +68,7 @@ protected:
     int				iNetDevsNum;					// 网络设备数量
     struct bpf_program fcode;
     pcap_t			*adhandle;						// 当前打开的设备句柄（指针）
-
+//private slots：
+//    void sendDevs(pcap_if_t *alldevs);
 };
 #endif // SNIFFER_H

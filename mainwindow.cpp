@@ -4,6 +4,7 @@
 #include <QStandardItem>
 #include <QTableWidget>
 #include <QDebug>
+#include "pcap.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -28,10 +29,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setColumnWidth(3,200);
     ui->treeView->setColumnWidth(4,200);
     ui->treeView->setColumnWidth(5,200);
+//    ui->comboBox->addItem("dsa");
 
     iPosition = 0;
-
-
+    CaptureThread *capturethread = new CaptureThread();
+     capturethread->start();
+     capturethread->sniffer = &sniffer;
+     connect(capturethread,SIGNAL(sendDevs(pcap_if_t *)),this,SLOT(receiveDevs(pcap_if_t *)));
 
 //    Sniffer *snif = new Sniffer;
 
@@ -69,22 +73,32 @@ void MainWindow::on_startCapture_clicked()
     capturethread->sniffer = &sniffer;
     // 启动线程
     capturethread->start();
-    connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString)),this,SLOT(receiveData(QString,QString,QString,QString)),Qt::QueuedConnection);
+    connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString,QString)),this,SLOT(receiveData(QString,QString,QString,QString,QString)),Qt::QueuedConnection);
 
 }
 
-void MainWindow::receiveData(QString data1,QString data2,QString data3,QString data4){
+void MainWindow::receiveData(QString data1,QString data2,QString data3,QString data4,QString data5){
         QStandardItem *item;
+        item = new QStandardItem(QString(iPosition));
+        mainModel->setItem(iPosition, 0, item);
         item = new QStandardItem(data1);
-        mainModel->setItem(iPosition, 2, item);
-
+        mainModel->setItem(iPosition, 1, item);
         item = new QStandardItem(data2);
+        mainModel->setItem(iPosition, 2, item);
+        item = new QStandardItem(data3);
         mainModel->setItem(iPosition, 3, item);
-         item = new QStandardItem(data3);
-            mainModel->setItem(iPosition, 4, item);
-            item = new QStandardItem(data4);
-            mainModel->setItem(iPosition, 5, item);
-//            item = new QStandardItem("ip");
-//            mainModel->setItem(0, 5, item);;
-         iPosition = iPosition + 1;
+        item = new QStandardItem(data4);
+        mainModel->setItem(iPosition, 4, item);
+        item = new QStandardItem(data5);
+        mainModel->setItem(iPosition, 5, item);
+        iPosition = iPosition + 1;
+
+}
+
+
+void MainWindow::receiveDevs(pcap_if_t *alldevs){
+    for(dev= alldevs; dev != NULL; dev= dev->next)
+    {
+            ui->comboBox->addItem(dev->name);
+    }
 }

@@ -9,9 +9,11 @@ CaptureThread::CaptureThread(){
 }
 
 void CaptureThread::run(){
+
+    alldevs = sniffer->findAllDevs();
+    emit sendDevs(alldevs);
     sniffer->openNetDev(6);
     sniffer->setDevsFilter("ip");
-
     sniffer->captureOnce();
 
 //    sniffer->analyze_frame(sniffer->pkt_data,sniffer->header);
@@ -72,7 +74,7 @@ void CaptureThread::run(){
                     std::cout<<"source:"<<tmpData->strSIP<<"\n";
                     std::cout<<"dest:"<<tmpData->strDIP<<"\n";
                     std::cout<<"lengthaaa:"<<tmpData->strLength<<"\n";
-                    emit sendData(QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
+                    emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
                     break;
                     }
                 case UDP_SIG:{
@@ -82,8 +84,8 @@ void CaptureThread::run(){
                     sprintf( sport, "%d", ntohs(uh->sport)); // 源端口
                     sprintf( dport, "%d", ntohs(uh->dport)); // 目的端口
                     tmpData->strSIP = tmpData->strSIP + sport;
-                    tmpData->strDIP = tmpData->strDIP + dport;
-
+                    tmpData->strDIP = tmpData->strDIP + dport;         
+                    emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
                     std::cout<<"protocol: UDP"<<"\n";
                     std::cout<<"sport:"<<ntohs(uh->sport)<<"\n";
                     std::cout<<"dport:"<<ntohs(uh->dport)<<"\n";
@@ -93,7 +95,7 @@ void CaptureThread::run(){
                     }
                 case ICMP_SIG:{
                     tmpData->strProto = "ICMP";
-                    std::cout<<"protocol: ICMP"<<"\n";
+                    emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
                     break;
                 }
             }

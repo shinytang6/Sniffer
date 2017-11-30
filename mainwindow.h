@@ -19,11 +19,13 @@ public:
 
 private slots:
     void on_startCapture_clicked();
-    void receiveData(QString data1,QString data2,QString data3,QString data4);
+    void receiveData(QString data1,QString data2,QString data3,QString data4,QString data5);
+    void receiveDevs(pcap_if_t *alldevs);
 private:
     Ui::MainWindow *ui;
     Sniffer sniffer;
     QStandardItemModel *mainModel;
+    pcap_if_t *dev;
     int iPosition;
 
 };

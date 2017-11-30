@@ -5,8 +5,7 @@
 
 Sniffer::Sniffer()
 {
-    // 创建时就获取设备列表
-    findAllDevs();
+
 }
 
 Sniffer::~Sniffer()
@@ -14,7 +13,7 @@ Sniffer::~Sniffer()
 
 }
 
-void Sniffer::findAllDevs(char *szFlag){
+pcap_if_t * Sniffer::findAllDevs(char *szFlag){
     if (pcap_findalldevs_ex(szFlag, NULL, &alldevs, errbuf) == -1) {
          qDebug() << "error " ;
      }
@@ -24,6 +23,7 @@ void Sniffer::findAllDevs(char *szFlag){
     {       iNetDevsNum++;
             qDebug() << dev->name << ":" <<dev->description;
     }
+    return alldevs;
 }
 
 bool Sniffer::openNetDev(int devNum){
