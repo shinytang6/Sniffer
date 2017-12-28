@@ -4,6 +4,7 @@
 #include <QStandardItem>
 #include <QTableWidget>
 #include <QDebug>
+
 #include "pcap.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -81,14 +82,27 @@ void MainWindow::on_startCapture_clicked()
     if (capturethread != NULL) {
             return;
     }
+
     capturethread = new CaptureThread;
 //    CaptureThread *capturethread = new CaptureThread();
     capturethread->sniffer = &sniffer;
+    capturethread->isStop = false;
+//    QString filter = ui->textEdit->toPlainText();
+//    QByteArray ba = filter.toLatin1();
+//    capturethread->filter = ba.data();
     capturethread->devNum = ui->comboBox->currentIndex();
+    QString filter = ui->textEdit->toPlainText();
+    capturethread->filter = filter;
+//    QByteArray ba = filter.toLatin1();
+//    capturethread->filter = ba.data();
+
     // 启动线程
     capturethread->start();
     connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString,QString)),this,SLOT(receiveData(QString,QString,QString,QString,QString)),Qt::QueuedConnection);
 
+//    QString filter = ui->textEdit->toPlainText();
+//    QByteArray ba = filter.toLatin1();
+//    capturethread->filter = ba.data();
 }
 
 void MainWindow::receiveData(QString data1,QString data2,QString data3,QString data4,QString data5){
@@ -112,7 +126,7 @@ void MainWindow::receiveData(QString data1,QString data2,QString data3,QString d
 void MainWindow::receiveDevs(pcap_if_t *alldevs){
     for(dev= alldevs; dev != NULL; dev= dev->next)
     {
-            ui->comboBox->addItem(dev->name);
+            ui->comboBox->addItem(dev->description);
     }
 }
 

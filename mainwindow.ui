@@ -17,19 +17,9 @@
    <widget class="QComboBox" name="comboBox">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>20</y>
-      <width>201</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="comboBox_2">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>60</y>
-      <width>201</width>
+      <x>240</x>
+      <y>10</y>
+      <width>381</width>
       <height>22</height>
      </rect>
     </property>
@@ -37,7 +27,7 @@
    <widget class="QPushButton" name="startCapture">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>700</x>
       <y>20</y>
       <width>101</width>
       <height>51</height>
@@ -50,7 +40,7 @@
    <widget class="QPushButton" name="stopCapture">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>880</x>
       <y>20</y>
       <width>91</width>
       <height>51</height>
@@ -60,51 +50,6 @@
      <string>终止</string>
     </property>
    </widget>
-   <widget class="QTreeWidget" name="treeWidget">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>310</y>
-      <width>541</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <column>
-     <property name="text">
-      <string>序号</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>时间</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>源IP地址</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>目标IP地址</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>协议</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>发送长度</string>
-     </property>
-    </column>
-    <item>
-     <property name="text">
-      <string>ewq</string>
-     </property>
-    </item>
-   </widget>
    <widget class="QTreeView" name="treeView">
     <property name="geometry">
      <rect>
@@ -113,6 +58,42 @@
       <width>1261</width>
       <height>261</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>60</y>
+      <width>251</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>10</y>
+      <width>72</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>选择网卡</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>60</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>过滤器</string>
     </property>
    </widget>
   </widget>

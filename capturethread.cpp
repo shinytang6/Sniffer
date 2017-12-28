@@ -7,6 +7,7 @@
 CaptureThread::CaptureThread(){
     devNum = 6;
     isStop = false;
+    filter = "";
 }
 
 void CaptureThread::run(){
@@ -16,7 +17,10 @@ void CaptureThread::run(){
     emit sendDevs(alldevs);
     std::cout<<"ahah"<<devNum;
     sniffer->openNetDev(devNum);
-    sniffer->setDevsFilter("ip");
+    // 将QSrting类型转化为char*传入setDevsFilter函数
+    QByteArray filter_byte = filter.toLatin1();
+    std::cout<<"filter condition: "<<filter_byte.data();
+    sniffer->setDevsFilter(filter_byte.data());
     while(sniffer->captureOnce() >= 0 && !isStop){
 
 

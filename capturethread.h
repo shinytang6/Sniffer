@@ -16,6 +16,7 @@ public:
     pcap_if_t *dev;
     int devNum;
     bool isStop;
+    QString filter;
 protected:
     void run();
 signals:
