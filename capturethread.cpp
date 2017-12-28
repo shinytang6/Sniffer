@@ -5,16 +5,20 @@
 #include <QStandardItem>
 #include <iostream>
 CaptureThread::CaptureThread(){
-
+    devNum = 6;
+    isStop = false;
 }
 
 void CaptureThread::run(){
 
+
     alldevs = sniffer->findAllDevs();
     emit sendDevs(alldevs);
-    sniffer->openNetDev(6);
+    std::cout<<"ahah"<<devNum;
+    sniffer->openNetDev(devNum);
     sniffer->setDevsFilter("ip");
-    sniffer->captureOnce();
+    while(sniffer->captureOnce() >= 0 && !isStop){
+
 
 //    sniffer->analyze_frame(sniffer->pkt_data,sniffer->header);
 //    while(sniffer->captureOnce() >= 0){
@@ -36,7 +40,7 @@ void CaptureThread::run(){
     ltime=localtime(&local_tv_sec);
     strftime( timestr, sizeof timestr, "%H:%M:%S", ltime);
     tmpData->strTime = timestr;
-
+    std::cout<<"type: "<<ntohs(eth->type)<<"\n";
     switch (ntohs(eth->type)) {
         case 0x0806 :{
 //            analyze_arp(pkt_data,tmpData);
@@ -98,6 +102,9 @@ void CaptureThread::run(){
                     emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
                     break;
                 }
+                default:{
+                    std::cout<<"something error"<<"\n";
+                }
             }
             break;
         }
@@ -106,6 +113,7 @@ void CaptureThread::run(){
             std::cout<<"protocol: ipv6"<<"\n";
             break;
         }
+     }
     }
 
 }

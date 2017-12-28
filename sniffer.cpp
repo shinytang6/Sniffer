@@ -100,6 +100,13 @@ int Sniffer::captureOnce(){
    return   pcap_next_ex( adhandle, &header, &pkt_data);
 }
 
+//int Sniffer::captureLoop(){
+//    while(pcap_next_ex( adhandle, &header, &pkt_data)){
+//        return pcap_next_ex( adhandle, &header, &pkt_data)
+//    }
+//}
+
+
 void Sniffer::freeDevsMem(){
     if(alldevs){
         pcap_freealldevs(alldevs);

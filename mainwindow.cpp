@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    capturethread = NULL;
 
 //    QStandardItemModel *mainModel;
 
@@ -32,11 +33,18 @@ MainWindow::MainWindow(QWidget *parent) :
 //    ui->comboBox->addItem("dsa");
 
     iPosition = 0;
-    CaptureThread *capturethread = new CaptureThread();
-     capturethread->start();
-     capturethread->sniffer = &sniffer;
-     connect(capturethread,SIGNAL(sendDevs(pcap_if_t *)),this,SLOT(receiveDevs(pcap_if_t *)));
+//    CaptureThread *capturethread = new CaptureThread();
+//     capturethread->start();
+//     capturethread->sniffer = &sniffer;
 
+
+     capturethread = new CaptureThread;
+     capturethread->sniffer = &sniffer;
+     capturethread->isStop = true;
+     capturethread->start();
+//     capturethread->devNum = ui->comboBox->currentIndex();
+     connect(capturethread,SIGNAL(sendDevs(pcap_if_t *)),this,SLOT(receiveDevs(pcap_if_t *)));
+     capturethread = NULL;
 //    Sniffer *snif = new Sniffer;
 
 //    connect(this,SIGNAL(sendData()),this,SLOT(receiveData()));
@@ -69,8 +77,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_startCapture_clicked()
 {
-    CaptureThread *capturethread = new CaptureThread();
+
+    if (capturethread != NULL) {
+            return;
+    }
+    capturethread = new CaptureThread;
+//    CaptureThread *capturethread = new CaptureThread();
     capturethread->sniffer = &sniffer;
+    capturethread->devNum = ui->comboBox->currentIndex();
     // 启动线程
     capturethread->start();
     connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString,QString)),this,SLOT(receiveData(QString,QString,QString,QString,QString)),Qt::QueuedConnection);
@@ -79,7 +93,7 @@ void MainWindow::on_startCapture_clicked()
 
 void MainWindow::receiveData(QString data1,QString data2,QString data3,QString data4,QString data5){
         QStandardItem *item;
-        item = new QStandardItem(QString(iPosition));
+        item = new QStandardItem(QString::number(iPosition+1, 10));
         mainModel->setItem(iPosition, 0, item);
         item = new QStandardItem(data1);
         mainModel->setItem(iPosition, 1, item);
@@ -92,7 +106,6 @@ void MainWindow::receiveData(QString data1,QString data2,QString data3,QString d
         item = new QStandardItem(data5);
         mainModel->setItem(iPosition, 5, item);
         iPosition = iPosition + 1;
-
 }
 
 
@@ -101,4 +114,9 @@ void MainWindow::receiveDevs(pcap_if_t *alldevs){
     {
             ui->comboBox->addItem(dev->name);
     }
+}
+
+void MainWindow::on_stopCapture_clicked()
+{
+    capturethread->isStop = true;
 }

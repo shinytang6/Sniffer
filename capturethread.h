@@ -14,11 +14,14 @@ public:
     MainTreeView *mainTree ;
     pcap_if_t *alldevs;
     pcap_if_t *dev;
+    int devNum;
+    bool isStop;
 protected:
     void run();
 signals:
    void  sendData(QString str1,QString str2,QString str3,QString str4,QString str5);
     void sendDevs(pcap_if_t *alldevs);
+
 };
 
 #endif // CAPTURETHREAD_H

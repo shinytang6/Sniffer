@@ -32,6 +32,7 @@ public:
     bool openNetDev(int iDevNum);									// 根据序号打开网络设备
     bool setDevsFilter(char *szFilter);                             // 对当前打开设备设置过滤器
     int	 captureOnce();												// 捕获一次网络数据包
+    int captureLoop();
     void captureByCallBack(snifferCB func);						// 以回调函数方式捕获数据
 
     void analyze_frame(const u_char *pkt_data,struct pcap_pkthdr *header);     // 分析Mac帧

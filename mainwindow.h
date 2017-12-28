@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include "sniffer.h"
+#include "capturethread.h"
 #include "iostream"
 namespace Ui {
 class MainWindow;
@@ -17,17 +18,21 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+
 private slots:
     void on_startCapture_clicked();
     void receiveData(QString data1,QString data2,QString data3,QString data4,QString data5);
     void receiveDevs(pcap_if_t *alldevs);
+    void on_stopCapture_clicked();
+
 private:
     Ui::MainWindow *ui;
     Sniffer sniffer;
     QStandardItemModel *mainModel;
     pcap_if_t *dev;
     int iPosition;
-
+//    int
+    CaptureThread *capturethread;
 };
 
 #endif // MAINWINDOW_H

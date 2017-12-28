@@ -47,7 +47,7 @@
      <string>开始</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="stopCapture">
     <property name="geometry">
      <rect>
       <x>700</x>
