@@ -8,6 +8,7 @@
 #include <QDateTime>
 CaptureThread::CaptureThread(){
     devNum = 6;
+    count = 1;
     isStop = false;
     filter = "";
 //    tempFile = "";
@@ -53,7 +54,41 @@ void CaptureThread::run(){
     char timestr[16];
     time_t local_tv_sec;
 
+    // 比特流
+    int cap_length = sniffer->header->caplen;
+    int frame_length = sniffer->header->len;
+    info_frame_bytes.sprintf("Frame %d (%d bytes on wire, %d bytes on captured)",
+                                     count, frame_length, cap_length);
+    info_frame_bytes_child.sprintf("Frame Number: %d",count);  info_frame_bytes_List.append(info_frame_bytes_child);
+            info_frame_bytes_child.sprintf("Packet Length: %d bytes",frame_length);   info_frame_bytes_List.append(info_frame_bytes_child);
+            info_frame_bytes_child.sprintf("Capture Length: %d bytes",cap_length);  info_frame_bytes_List.append(info_frame_bytes_child);
+
+
     ethhdr *eth = (ethhdr*)(sniffer->pkt_data);
+    // 以太网帧
+    info_frame_Eth_Hdr.sprintf("Ethernet II, Src: %02x:%02x:%02x:%02x:%02x:%02x, Dst: %02x:%02x:%02x:%02x:%02x:%02x",
+                                      eth->src[0],eth->src[1],eth->src[2],
+                                      eth->src[3],eth->src[4],eth->src[5],
+                                      eth->dest[0],eth->dest[1],eth->dest[2],
+                                      eth->dest[3],eth->dest[4],eth->dest[5]
+                                      );
+    info_frame_Eth_Hdr_child.sprintf("Destionation: %02x:%02x:%02x:%02x:%02x:%02x (%02x:%02x:%02x:%02x:%02x:%02x)",
+                                             eth->dest[0],eth->dest[1],eth->dest[2],
+                                             eth->dest[3],eth->dest[4],eth->dest[5],
+                                             eth->dest[0],eth->dest[1],eth->dest[2],
+                                             eth->dest[3],eth->dest[4],eth->dest[5]);
+    info_frame_Eth_Hdr_List.append(info_frame_Eth_Hdr_child);
+
+    info_frame_Eth_Hdr_child.sprintf("Source: %02x:%02x:%02x:%02x:%02x:%02x (%02x:%02x:%02x:%02x:%02x:%02x)",
+                                             eth->src[0],eth->src[1],eth->src[2],
+                                             eth->src[3],eth->src[4],eth->src[5],
+                                             eth->src[0],eth->src[1],eth->src[2],
+                                             eth->src[3],eth->src[4],eth->src[5]);
+    info_frame_Eth_Hdr_List.append(info_frame_Eth_Hdr_child);
+
+    info_frame_Eth_Hdr_child.sprintf("Type: 0x%04x (IP)",eth->type);
+    info_frame_Eth_Hdr_List.append(info_frame_Eth_Hdr_child);
+
     tempSnifferData *tmpData = new tempSnifferData();
 
     /* 将时间戳转换成可识别的格式 */
@@ -62,6 +97,7 @@ void CaptureThread::run(){
     strftime( timestr, sizeof timestr, "%H:%M:%S", ltime);
     tmpData->strTime = timestr;
     std::cout<<"type: "<<ntohs(eth->type)<<"\n";
+    count++;
     switch (ntohs(eth->type)) {
         case 0x0806 :{
 //            analyze_arp(pkt_data,tmpData);
@@ -83,6 +119,22 @@ void CaptureThread::run(){
             // 获得 IP 协议头
             iphdr *ih = (iphdr *)(sniffer->pkt_data+ 14);
             u_int ip_len = (ih->ver_ihl & 0xf) * 4;
+
+            info_frame_Ip_Hdr.sprintf("Internet Protocol, Src: %u.%u.%u.%u, Dst: %u.%u.%u.%u",
+                                               ih->saddr[0], ih->saddr[1], ih->saddr[2], ih->saddr[3],
+                                               ih->saddr[0], ih->saddr[1], ih->saddr[2], ih->saddr[3]
+                                               );
+
+            info_frame_Ip_Hdr_child.sprintf("Version: 4 ");                                                               info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child.sprintf("Total Length: %d", htons(ih->tlen));                                   info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child.sprintf("Identification: 0x%04x (%d)", htons(ih->identification), htons(ih->identification));           info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child.sprintf("Fragment Offset: %d", htons(ih->flags_fo));                               info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child.sprintf("Time to Live: %d", htons(ih->ttl));                                       info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child = QString("Protocol: %1 (%2)").arg(ih->proto).arg(ih->proto);
+            info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child.sprintf("Header Checksum: 0x%04x",  htons(ih->crc));                             info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child.sprintf("Source: %u.%u.%u.%u", ih->saddr[0],ih->saddr[1],ih->saddr[2],ih->saddr[3]);     info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child.sprintf("Destionation: %u.%u.%u.%u ", ih->daddr[0],ih->daddr[1],ih->daddr[2],ih->daddr[3]); info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
             char len[10];
             sprintf( len, "%d", ip_len);
             tmpData->strLength = len;
@@ -120,7 +172,7 @@ void CaptureThread::run(){
                     sprintf( sport, "%d", ntohs(uh->sport)); // 源端口
                     sprintf( dport, "%d", ntohs(uh->dport)); // 目的端口
                     tmpData->strSIP = tmpData->strSIP + sport;
-                    tmpData->strDIP = tmpData->strDIP + dport;         
+                    tmpData->strDIP = tmpData->strDIP + dport;
                     emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
                     std::cout<<"protocol: UDP"<<"\n";
                     std::cout<<"sport:"<<ntohs(uh->sport)<<"\n";

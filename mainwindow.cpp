@@ -35,20 +35,20 @@ MainWindow::MainWindow(QWidget *parent) :
 //    ui->comboBox->addItem("dsa");
 
     mainModel2 = new QStandardItemModel();
-    mainModel2->setColumnCount(6);
-    mainModel2->setHeaderData(0, Qt::Horizontal, tr("序号"));
-    mainModel2->setHeaderData(1, Qt::Horizontal, tr("时间"));
-    mainModel2->setHeaderData(2, Qt::Horizontal, tr("源IP地址"));
-    mainModel2->setHeaderData(3, Qt::Horizontal, tr("目标IP地址"));
-    mainModel2->setHeaderData(4, Qt::Horizontal, tr("协议"));
-    mainModel2->setHeaderData(5, Qt::Horizontal, tr("发送长度"));
+//    mainModel2->setColumnCount(6);
+//    mainModel2->setHeaderData(0, Qt::Horizontal, tr("序号"));
+//    mainModel2->setHeaderData(1, Qt::Horizontal, tr("时间"));
+//    mainModel2->setHeaderData(2, Qt::Horizontal, tr("源IP地址"));
+//    mainModel2->setHeaderData(3, Qt::Horizontal, tr("目标IP地址"));
+//    mainModel2->setHeaderData(4, Qt::Horizontal, tr("协议"));
+//    mainModel2->setHeaderData(5, Qt::Horizontal, tr("发送长度"));
     ui->detailview->setModel(mainModel2);
-    ui->detailview->setColumnWidth(0,50);
-    ui->detailview->setColumnWidth(1,200);
-    ui->detailview->setColumnWidth(2,200);
-    ui->detailview->setColumnWidth(3,200);
-    ui->detailview->setColumnWidth(4,200);
-    ui->detailview->setColumnWidth(5,200);
+//    ui->detailview->setColumnWidth(0,50);
+//    ui->detailview->setColumnWidth(1,200);
+//    ui->detailview->setColumnWidth(2,200);
+//    ui->detailview->setColumnWidth(3,200);
+//    ui->detailview->setColumnWidth(4,200);
+//    ui->detailview->setColumnWidth(5,200);
 
 
 
@@ -128,6 +128,7 @@ void MainWindow::on_startCapture_clicked()
 }
 
 void MainWindow::receiveData(QString data1,QString data2,QString data3,QString data4,QString data5){
+
         QStandardItem *item;
         item = new QStandardItem(QString::number(iPosition+1, 10));
         mainModel->setItem(iPosition, 0, item);
@@ -142,6 +143,25 @@ void MainWindow::receiveData(QString data1,QString data2,QString data3,QString d
         item = new QStandardItem(data5);
         mainModel->setItem(iPosition, 5, item);
         iPosition = iPosition + 1;
+
+//        item = new QStandardItem(frame);
+//        mainModel2->setItem(0, 0, item);
+//        for(int i = 0; i < frame_list.count(); i++){
+//                 QStandardItem* itemChild = new QStandardItem(frame_list[i]);
+//                 item->appendRow(itemChild);
+//        }
+
+//        QStandardItem* itemProject = new QStandardItem(index.data().toString());
+//        mainModel2->appendRow(itemProject);
+//        QStandardItem* itemChild = new QStandardItem(QStringLiteral("length"));
+//        itemProject->appendRow(itemChild);
+
+//        QTreeWidgetItem *Item1 = new QTreeWidgetItem(mainModel2,QStringList(info_frame_bytes));
+//                    for(int i = 0; i < info_frame_bytes_List.count(); i++)
+//                    {
+//                        QTreeWidgetItem *Item1_1 = new QTreeWidgetItem(Item1,QStringList(info_frame_bytes_List[i])); //子节点1_1
+//                        Item1->addChild(Item1_1); //添加子节点
+//                    }
 }
 
 
@@ -183,19 +203,22 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index)
 {
 //    printf("index is %d",index);
 //    printf("\n");
-////    printf("treview index is %s",ui->treeView->currentIndex().model());
+//    printf("treview index is %s",ui->treeView->currentIndex().model());
 //    QStandardItemModel* model = static_cast<QStandardItemModel*>(ui->treeView->model());
 //    QModelIndex currentIndex = ui->treeView->currentIndex();
 //    QStandardItem* currentItem = model->itemFromIndex(currentIndex);
-////    QStandardItem *item;
-////    item = new QStandardItem(ui->treeView->currentIndex().data());
-////    mainModel2->setItem(0, 1,item);
+//    QStandardItem *item;
+//    item = new QStandardItem(ui->treeView->currentIndex().data());
+//    mainModel2->setItem(0, 1,item);
 //    QTreeWidgetItem *Item1 = new QTreeWidgetItem(ui->detailview,currentItem);
-
+     QStandardItem* itemProject = new QStandardItem(index.data().toString());
+     mainModel2->appendRow(itemProject);
+     QStandardItem* itemChild = new QStandardItem(QStringLiteral("length"));
+     itemProject->appendRow(itemChild);
 
 //     QString str;
 //     str += QStringLiteral("当前选中：%1\nrow:%2,column:%3\n").arg(index.data().toString())
 //                           .arg(index.row()).arg(index.column());
 //     str += QStringLiteral("父级：%1\n").arg(index.parent().data().toString());
-//     ui->label->setText(str);
+//     ui->label_3->setText(str);
 }
