@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "capturethread.h"
+#include "sniffer.h"
 #include <QStandardItem>
 #include <QTableWidget>
 #include <QDebug>
@@ -133,4 +134,26 @@ void MainWindow::receiveDevs(pcap_if_t *alldevs){
 void MainWindow::on_stopCapture_clicked()
 {
     capturethread->isStop = true;
+}
+
+void MainWindow::on_saveData_clicked()
+{
+//    capturethread = new CaptureThread;
+//    capturethread->sniffer = &sniffer;
+//    capturethread->isStop = true;
+//    capturethread->start();
+//    capturethread = NULL;
+//    capturethread->tempFile ="G:/sniferTempData/snif.txt";
+}
+
+
+
+void MainWindow::on_loadFile_clicked()
+{
+        capturethread = new CaptureThread;
+        capturethread->sniffer = &sniffer;
+        capturethread->isStop = true;
+        capturethread->start();
+        capturethread = NULL;
+//        capturethread->tempFile ="G:/sniferTempData/snif.txt";
 }

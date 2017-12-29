@@ -17,6 +17,7 @@ public:
     int devNum;
     bool isStop;
     QString filter;
+    QString tempFile;
 protected:
     void run();
 signals:

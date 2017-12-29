@@ -4,13 +4,18 @@
 #include <winsock2.h>
 #include <QStandardItem>
 #include <iostream>
+#include <QDir>
+#include <QDateTime>
 CaptureThread::CaptureThread(){
     devNum = 6;
     isStop = false;
     filter = "";
+//    tempFile = "";
+    tempFile = QDir::tempPath() + "/sniffer.txt" ;
 }
 
 void CaptureThread::run(){
+
 
 
     alldevs = sniffer->findAllDevs();
@@ -21,8 +26,20 @@ void CaptureThread::run(){
     QByteArray filter_byte = filter.toLatin1();
     std::cout<<"filter condition: "<<filter_byte.data();
     sniffer->setDevsFilter(filter_byte.data());
+
+    std::cout<<"save file name:"<<(const char *)tempFile.toLocal8Bit()<<endl;
+    if(tempFile.isEmpty()) {
+         sniffer->openDumpFile((const char *)tempFile.toLocal8Bit());
+    } else {
+        std::cout<<"good!!!!!"<<endl;
+        sniffer->openSavedDumpFile((const char *)tempFile.toLocal8Bit());
+    }
     while(sniffer->captureOnce() >= 0 && !isStop){
 
+
+        sniffer->saveDumpFile();
+
+        std::cout<<"save file name:"<<(const char *)tempFile.toLocal8Bit()<<endl;
 
 //    sniffer->analyze_frame(sniffer->pkt_data,sniffer->header);
 //    while(sniffer->captureOnce() >= 0){
@@ -49,6 +66,17 @@ void CaptureThread::run(){
         case 0x0806 :{
 //            analyze_arp(pkt_data,tmpData);
             std::cout<<"protocol: arp"<<"\n";
+            arphdr *arph = (arphdr *)(sniffer->pkt_data+ 14);
+            char szSaddr[24], szDaddr[24];
+            sprintf(szSaddr,"%x.%x.%x.%x.%x.%x",arph->ar_srcip[0], arph->ar_srcip[1], arph->ar_srcip[2], arph->ar_srcmac[3],arph->ar_srcmac[4],arph->ar_srcmac[5]);
+            sprintf(szDaddr,"%x.%x.%x.%x.%x.%x",arph->ar_destmac[0], arph->ar_destmac[1], arph->ar_destmac[2], arph->ar_destmac[3],arph->ar_destmac[4],arph->ar_destmac[5]);
+            std::cout<<"arp source:"<<szSaddr<<endl;
+            std::cout<<"arp dest:"<<szDaddr<<endl;
+            tmpData->strSIP = szSaddr;
+            tmpData->strDIP = szDaddr;
+            tmpData->strProto = "ARP";
+            tmpData->strLength = "28";
+            emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
             break;
         }
         case 0x0800 :{

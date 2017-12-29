@@ -54,6 +54,24 @@ bool Sniffer::openNetDev(int devNum){
         }
 }
 
+bool Sniffer::openNetDev(char *szDevName)
+{
+
+
+    fp = pcap_open(szDevName,			// 设备名
+                        65536,		// 数据包大小限制
+                        PCAP_OPENFLAG_PROMISCUOUS,				// 网卡设置打开模式
+                        1000,				// 读取超时时间
+                        NULL,				// 远程机器验证
+                        errbuf);			// 错误缓冲
+
+    if (fp == NULL) {
+        return -1;
+    }
+
+    return 1;
+}
+
 bool Sniffer::setDevsFilter(char *szFilter)
 {
     /* 检查数据链路层，为了简单，我们只考虑以太网 */
@@ -105,6 +123,54 @@ int Sniffer::captureOnce(){
 //        return pcap_next_ex( adhandle, &header, &pkt_data)
 //    }
 //}
+
+bool Sniffer::openDumpFile(const char *szFileName){
+    dumpfile = pcap_dump_open(adhandle, szFileName);
+    if(dumpfile!=NULL)
+        return true;
+    return false;
+}
+
+void Sniffer::saveDumpFile(){
+   if(dumpfile != NULL)
+        pcap_dump((unsigned char *)dumpfile, header, pkt_data);
+}
+
+bool Sniffer::openSavedDumpFile(const char *szFileName){
+    char source[PCAP_BUF_SIZE];
+    int i;
+    if ( pcap_createsrcstr( source,         // 源字符串
+                                PCAP_SRC_FILE,  // 我们要打开的文件
+                                NULL,           // 远程主机
+                                NULL,           // 远程主机端口
+                                szFileName,        // 我们要打开的文件名
+                                errbuf          // 错误缓冲区
+                                ) != 0)
+        {
+            fprintf(stderr,"\nError creating a source string\n");
+            return -1;
+        }
+    else {
+        openNetDev(source);
+        while((pcap_next_ex( fp, &header, &pkt_data)) >= 0)
+           {
+               /* 打印pkt时间戳和pkt长度 */
+               printf("%ld:%ld (%ld)\n", header->ts.tv_sec, header->ts.tv_usec, header->len);
+
+               /* 打印数据包 */
+               for (i=1; (i < header->caplen + 1 ) ; i++)
+               {
+                   printf("%.2x ", pkt_data[i-1]);
+                   if ( (i % 16) == 0) printf("\n");
+               }
+
+               printf("\n\n");
+               printf("\n\n");
+           }
+
+    }
+}
+
 
 
 void Sniffer::freeDevsMem(){

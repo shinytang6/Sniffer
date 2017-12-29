@@ -24,6 +24,9 @@ private slots:
     void receiveData(QString data1,QString data2,QString data3,QString data4,QString data5);
     void receiveDevs(pcap_if_t *alldevs);
     void on_stopCapture_clicked();
+    void on_saveData_clicked();
+
+    void on_loadFile_clicked();
 
 private:
     Ui::MainWindow *ui;
