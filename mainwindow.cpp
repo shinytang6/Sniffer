@@ -5,7 +5,7 @@
 #include <QStandardItem>
 #include <QTableWidget>
 #include <QDebug>
-
+#include <QTreeWidgetItem>
 #include "pcap.h"
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -33,6 +33,27 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setColumnWidth(4,200);
     ui->treeView->setColumnWidth(5,200);
 //    ui->comboBox->addItem("dsa");
+
+    mainModel2 = new QStandardItemModel();
+    mainModel2->setColumnCount(6);
+    mainModel2->setHeaderData(0, Qt::Horizontal, tr("序号"));
+    mainModel2->setHeaderData(1, Qt::Horizontal, tr("时间"));
+    mainModel2->setHeaderData(2, Qt::Horizontal, tr("源IP地址"));
+    mainModel2->setHeaderData(3, Qt::Horizontal, tr("目标IP地址"));
+    mainModel2->setHeaderData(4, Qt::Horizontal, tr("协议"));
+    mainModel2->setHeaderData(5, Qt::Horizontal, tr("发送长度"));
+    ui->detailview->setModel(mainModel2);
+    ui->detailview->setColumnWidth(0,50);
+    ui->detailview->setColumnWidth(1,200);
+    ui->detailview->setColumnWidth(2,200);
+    ui->detailview->setColumnWidth(3,200);
+    ui->detailview->setColumnWidth(4,200);
+    ui->detailview->setColumnWidth(5,200);
+
+
+
+
+
 
     iPosition = 0;
 //    CaptureThread *capturethread = new CaptureThread();
@@ -156,4 +177,25 @@ void MainWindow::on_loadFile_clicked()
         capturethread->start();
         capturethread = NULL;
 //        capturethread->tempFile ="G:/sniferTempData/snif.txt";
+}
+
+void MainWindow::on_treeView_clicked(const QModelIndex &index)
+{
+//    printf("index is %d",index);
+//    printf("\n");
+////    printf("treview index is %s",ui->treeView->currentIndex().model());
+//    QStandardItemModel* model = static_cast<QStandardItemModel*>(ui->treeView->model());
+//    QModelIndex currentIndex = ui->treeView->currentIndex();
+//    QStandardItem* currentItem = model->itemFromIndex(currentIndex);
+////    QStandardItem *item;
+////    item = new QStandardItem(ui->treeView->currentIndex().data());
+////    mainModel2->setItem(0, 1,item);
+//    QTreeWidgetItem *Item1 = new QTreeWidgetItem(ui->detailview,currentItem);
+
+
+//     QString str;
+//     str += QStringLiteral("当前选中：%1\nrow:%2,column:%3\n").arg(index.data().toString())
+//                           .arg(index.row()).arg(index.column());
+//     str += QStringLiteral("父级：%1\n").arg(index.parent().data().toString());
+//     ui->label->setText(str);
 }

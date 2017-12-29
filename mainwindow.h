@@ -28,10 +28,14 @@ private slots:
 
     void on_loadFile_clicked();
 
+    void on_treeView_clicked(const QModelIndex &index);
+
 private:
     Ui::MainWindow *ui;
     Sniffer sniffer;
     QStandardItemModel *mainModel;
+    //
+     QStandardItemModel *mainModel2;
     pcap_if_t *dev;
     int iPosition;
 //    int

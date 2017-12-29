@@ -28,7 +28,7 @@ void CaptureThread::run(){
     sniffer->setDevsFilter(filter_byte.data());
 
     std::cout<<"save file name:"<<(const char *)tempFile.toLocal8Bit()<<endl;
-    if(tempFile.isEmpty()) {
+    if(!tempFile.isEmpty()) {
          sniffer->openDumpFile((const char *)tempFile.toLocal8Bit());
     } else {
         std::cout<<"good!!!!!"<<endl;
