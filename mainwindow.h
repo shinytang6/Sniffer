@@ -6,6 +6,7 @@
 #include "sniffer.h"
 #include "capturethread.h"
 #include "iostream"
+#include <QSortFilterProxyModel>
 namespace Ui {
 class MainWindow;
 }
@@ -31,6 +32,8 @@ private slots:
     void on_loadFile_clicked();
     void on_treeView_clicked(const QModelIndex &index);
 
+    void on_search_clicked();
+
 private:
     Ui::MainWindow *ui;
     Sniffer sniffer;
@@ -45,6 +48,8 @@ private:
     QList<QStringList> list2;
     QList<QStringList> list3;
     QList<QStringList> list4;
+
+    QSortFilterProxyModel *sfmodel;
 };
 
 #endif // MAINWINDOW_H

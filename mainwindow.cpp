@@ -9,6 +9,7 @@
 #include "pcap.h"
 #include <QList>
 #include <QMetaType>
+#include <QSortFilterProxyModel>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -229,7 +230,15 @@ void MainWindow::on_loadFile_clicked()
 
 void MainWindow::on_treeView_clicked(const QModelIndex &index)
 {
-//    printf("index is %d",index);
+    // 获取行号
+    QString lineNum;
+    if(index.column() == 0)
+    {
+            lineNum = index.data().toString();
+     }
+    else{
+            lineNum = index.sibling(index.row(),0).data().toString();
+    }
 //    printf("\n");
 //    printf("treview index is %s",ui->treeView->currentIndex().model());
 //    QStandardItemModel* model = static_cast<QStandardItemModel*>(ui->treeView->model());
@@ -250,7 +259,8 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index)
 
 
                     QStandardItem *item;
-                    int row = ui->treeView->currentIndex().row();
+                    bool ok;
+                    int row = lineNum.toInt(&ok,10)-1;
                     int number = 0;
                     if(row>=1)
                         number = list1[row-1].count();
@@ -270,8 +280,8 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index)
                    mainModel2->setItem(1, 0, item);
                    for(int i = number+1; i < list2[row].count(); i++)
                    {
-                       QStandardItem *Item1_1 = new QStandardItem(list2[row][i]); //子节点1_1
-                       item->appendRow(Item1_1); //添加子节点;
+                       QStandardItem *Item1_2 = new QStandardItem(list2[row][i]); //子节点1_2
+                       item->appendRow(Item1_2); //添加子节点;
                    }
 
 
@@ -282,8 +292,8 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index)
                    mainModel2->setItem(2, 0, item);
                    for(int i = number+1; i < list3[row].count(); i++)
                    {
-                       QStandardItem *Item1_1 = new QStandardItem(list3[row][i]); //子节点1_1
-                       item->appendRow(Item1_1); //添加子节点;
+                       QStandardItem *Item1_3 = new QStandardItem(list3[row][i]); //子节点1_3
+                       item->appendRow(Item1_3); //添加子节点;
                    }
 
                    if(row>=1)
@@ -293,13 +303,29 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index)
                    mainModel2->setItem(3, 0, item);
                    for(int i = number+1; i < list4[row].count(); i++)
                    {
-                       QStandardItem *Item1_1 = new QStandardItem(list4[row][i]); //子节点1_1
-                       item->appendRow(Item1_1); //添加子节点;
+                       QStandardItem *Item1_4 = new QStandardItem(list4[row][i]); //子节点1_4
+                       item->appendRow(Item1_4); //添加子节点;
                    }
+
+
 
 //     QString str;
 //     str += QStringLiteral("当前选中：%1\nrow:%2,column:%3\n").arg(index.data().toString())
 //                           .arg(index.row()).arg(index.column());
 //     str += QStringLiteral("父级：%1\n").arg(index.parent().data().toString());
 //     ui->label_3->setText(str);
+}
+
+void MainWindow::on_search_clicked()
+{
+    QString filter = ui->textEdit->toPlainText();
+//     std::cout<<ui->treeView->data(0).toString();
+//    mainModel.setFilterRegExp("tcp");
+    sfmodel = new QSortFilterProxyModel(this);
+    ui->treeView->setModel(sfmodel);
+    sfmodel->setSourceModel(mainModel);
+    sfmodel->setFilterKeyColumn(-1);
+//    sfmodel.setFilterFixedString("keyword");
+//    sfmodel->setFilterFixedString(filter);
+    sfmodel->setFilterRegExp(filter);
 }
