@@ -125,10 +125,10 @@
    <widget class="QTreeView" name="detailview">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>40</x>
       <y>390</y>
-      <width>871</width>
-      <height>192</height>
+      <width>1151</width>
+      <height>201</height>
      </rect>
     </property>
    </widget>

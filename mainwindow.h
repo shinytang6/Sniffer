@@ -21,25 +21,27 @@ public:
 
 private slots:
     void on_startCapture_clicked();
+    void receiveDetail(QList<QString> strList);
+
     void receiveData(QString data1,QString data2,QString data3,QString data4,QString data5);
     void receiveDevs(pcap_if_t *alldevs);
     void on_stopCapture_clicked();
     void on_saveData_clicked();
 
     void on_loadFile_clicked();
-
     void on_treeView_clicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui;
     Sniffer sniffer;
     QStandardItemModel *mainModel;
-    //
      QStandardItemModel *mainModel2;
     pcap_if_t *dev;
     int iPosition;
+    int cnt;
 //    int
     CaptureThread *capturethread;
+    QList<QStringList> list1;
 };
 
 #endif // MAINWINDOW_H

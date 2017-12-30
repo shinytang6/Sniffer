@@ -7,15 +7,18 @@
 #include <QDebug>
 #include <QTreeWidgetItem>
 #include "pcap.h"
+#include <QList>
+#include <QMetaType>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     capturethread = NULL;
-
+    cnt = 0;
+    qRegisterMetaType<QList<QString>> ("QList<QString>");
+    qRegisterMetaType<QString> ("QString");
 //    QStandardItemModel *mainModel;
-
     mainModel = new QStandardItemModel();
     mainModel->setColumnCount(6);
     mainModel->setHeaderData(0, Qt::Horizontal, tr("序号"));
@@ -121,7 +124,7 @@ void MainWindow::on_startCapture_clicked()
     // 启动线程
     capturethread->start();
     connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString,QString)),this,SLOT(receiveData(QString,QString,QString,QString,QString)),Qt::QueuedConnection);
-
+    connect(capturethread,SIGNAL(sendDetail(QList<QString> )),this,SLOT(receiveDetail(QList<QString>)),Qt::QueuedConnection);
 //    QString filter = ui->textEdit->toPlainText();
 //    QByteArray ba = filter.toLatin1();
 //    capturethread->filter = ba.data();
@@ -162,6 +165,31 @@ void MainWindow::receiveData(QString data1,QString data2,QString data3,QString d
 //                        QTreeWidgetItem *Item1_1 = new QTreeWidgetItem(Item1,QStringList(info_frame_bytes_List[i])); //子节点1_1
 //                        Item1->addChild(Item1_1); //添加子节点
 //                    }
+}
+
+void MainWindow::receiveDetail(QList<QString> strList){
+
+
+//        QStandardItem *item;
+//        item = new QStandardItem(str);
+//        mainModel2->setItem(iPosition, 0, item);
+
+
+
+//        for(int i = 0; i < strList.count(); i++)
+//        {
+//             QStandardItem *Item1_1 = new QStandardItem(strList[i]); //子节点1_1
+//             item->appendRow(Item1_1); //添加子节点
+//            qDebug()<<"detail:"<<strList[i]<<"\n";
+//        }
+//         std::cout<<"AAAAAAAAA:"<<str.toStdString()<<endl;
+//            qDebug()<<"detail:"<<str<<"\n";
+          list1.append(strList);
+//        list2.append(strList2);
+//        list3.append(strList3);
+
+
+
 }
 
 
@@ -211,10 +239,54 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index)
 //    item = new QStandardItem(ui->treeView->currentIndex().data());
 //    mainModel2->setItem(0, 1,item);
 //    QTreeWidgetItem *Item1 = new QTreeWidgetItem(ui->detailview,currentItem);
-     QStandardItem* itemProject = new QStandardItem(index.data().toString());
-     mainModel2->appendRow(itemProject);
-     QStandardItem* itemChild = new QStandardItem(QStringLiteral("length"));
-     itemProject->appendRow(itemChild);
+//     QStandardItem* itemProject = new QStandardItem(index.data().toString());
+//     mainModel2->appendRow(itemProject);
+//     QStandardItem* itemChild = new QStandardItem(QStringLiteral("length"));
+//     itemProject->appendRow(itemChild);
+
+
+
+//                    qDebug()<<"detail:"<<list2[ui->treeView->currentIndex().row()]<<"\n";
+
+
+                    QStandardItem *item;
+                    int row = ui->treeView->currentIndex().row();
+                    int number = 0;
+                    if(row>=1)
+                        number = list1[row-1].count();
+
+                    item = new QStandardItem(list1[row][number]);
+                    mainModel2->setItem(0, 0, item);
+                            for(int i = number+1; i < list1[row].count(); i++)
+                            {
+                                 QStandardItem *Item1_1 = new QStandardItem(list1[row][i]); //子节点1_1
+                                 item->appendRow(Item1_1); //添加子节点;
+                            }
+
+
+
+//                   if(row>=1)
+//                        number = list2[row-1].count();
+
+//                   item = new QStandardItem(list2[row][number]);
+//                   mainModel2->setItem(1, 0, item);
+//                   for(int i = number+1; i < list2[row].count(); i++)
+//                   {
+//                       QStandardItem *Item1_1 = new QStandardItem(list2[row][i]); //子节点1_1
+//                       item->appendRow(Item1_1); //添加子节点;
+//                   }
+
+
+//                   if(row>=1)
+//                        number = list3[row-1].count();
+
+//                   item = new QStandardItem(list3[row][number]);
+//                   mainModel2->setItem(2, 0, item);
+//                   for(int i = number+1; i < list3[row].count(); i++)
+//                   {
+//                       QStandardItem *Item1_1 = new QStandardItem(list3[row][i]); //子节点1_1
+//                       item->appendRow(Item1_1); //添加子节点;
+//                    }
 
 //     QString str;
 //     str += QStringLiteral("当前选中：%1\nrow:%2,column:%3\n").arg(index.data().toString())

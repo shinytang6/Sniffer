@@ -41,7 +41,8 @@ public:
 protected:
     void run();
 signals:
-   void  sendData(QString str1,QString str2,QString str3,QString str4,QString str5);
+    void  sendData(QString str1,QString str2,QString str3,QString str4,QString str5);
+    void  sendDetail(QList<QString> strList);
     void sendDevs(pcap_if_t *alldevs);
 
 };

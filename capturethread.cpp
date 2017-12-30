@@ -6,6 +6,7 @@
 #include <iostream>
 #include <QDir>
 #include <QDateTime>
+#include <QMetaType>
 CaptureThread::CaptureThread(){
     devNum = 6;
     count = 1;
@@ -120,11 +121,11 @@ void CaptureThread::run(){
             iphdr *ih = (iphdr *)(sniffer->pkt_data+ 14);
             u_int ip_len = (ih->ver_ihl & 0xf) * 4;
 
-            info_frame_Ip_Hdr.sprintf("Internet Protocol, Src: %u.%u.%u.%u, Dst: %u.%u.%u.%u",
+            info_frame_Ip_Hdr_child.sprintf("Internet Protocol, Src: %u.%u.%u.%u, Dst: %u.%u.%u.%u",
                                                ih->saddr[0], ih->saddr[1], ih->saddr[2], ih->saddr[3],
                                                ih->saddr[0], ih->saddr[1], ih->saddr[2], ih->saddr[3]
                                                );
-
+            info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
             info_frame_Ip_Hdr_child.sprintf("Version: 4 ");                                                               info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
             info_frame_Ip_Hdr_child.sprintf("Total Length: %d", htons(ih->tlen));                                   info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
             info_frame_Ip_Hdr_child.sprintf("Identification: 0x%04x (%d)", htons(ih->identification), htons(ih->identification));           info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
@@ -162,6 +163,8 @@ void CaptureThread::run(){
                     std::cout<<"source:"<<tmpData->strSIP<<"\n";
                     std::cout<<"dest:"<<tmpData->strDIP<<"\n";
                     std::cout<<"lengthaaa:"<<tmpData->strLength<<"\n";
+                    std::cout<<"AAAAAAAAA:"<<info_frame_Ip_Hdr.toStdString()<<endl;
+                    emit sendDetail(info_frame_Ip_Hdr_List);
                     emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
                     break;
                     }
@@ -173,6 +176,8 @@ void CaptureThread::run(){
                     sprintf( dport, "%d", ntohs(uh->dport)); // 目的端口
                     tmpData->strSIP = tmpData->strSIP + sport;
                     tmpData->strDIP = tmpData->strDIP + dport;
+                    std::cout<<"AAAAAAAAA:"<<info_frame_Ip_Hdr.toStdString()<<endl;
+                    emit sendDetail(info_frame_Ip_Hdr_List);
                     emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
                     std::cout<<"protocol: UDP"<<"\n";
                     std::cout<<"sport:"<<ntohs(uh->sport)<<"\n";
