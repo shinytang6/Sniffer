@@ -42,7 +42,7 @@ protected:
     void run();
 signals:
     void  sendData(QString str1,QString str2,QString str3,QString str4,QString str5);
-    void  sendDetail(QList<QString> strList);
+    void  sendDetail(QList<QString> strList1,QList<QString> strList2,QList<QString> strList3,QList<QString> strList4);
     void sendDevs(pcap_if_t *alldevs);
 
 };

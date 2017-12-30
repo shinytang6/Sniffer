@@ -58,8 +58,9 @@ void CaptureThread::run(){
     // 比特流
     int cap_length = sniffer->header->caplen;
     int frame_length = sniffer->header->len;
-    info_frame_bytes.sprintf("Frame %d (%d bytes on wire, %d bytes on captured)",
+    info_frame_bytes_child.sprintf("Frame %d (%d bytes on wire, %d bytes on captured)",
                                      count, frame_length, cap_length);
+    info_frame_bytes_List.append(info_frame_bytes_child);
     info_frame_bytes_child.sprintf("Frame Number: %d",count);  info_frame_bytes_List.append(info_frame_bytes_child);
             info_frame_bytes_child.sprintf("Packet Length: %d bytes",frame_length);   info_frame_bytes_List.append(info_frame_bytes_child);
             info_frame_bytes_child.sprintf("Capture Length: %d bytes",cap_length);  info_frame_bytes_List.append(info_frame_bytes_child);
@@ -67,12 +68,13 @@ void CaptureThread::run(){
 
     ethhdr *eth = (ethhdr*)(sniffer->pkt_data);
     // 以太网帧
-    info_frame_Eth_Hdr.sprintf("Ethernet II, Src: %02x:%02x:%02x:%02x:%02x:%02x, Dst: %02x:%02x:%02x:%02x:%02x:%02x",
+    info_frame_Eth_Hdr_child.sprintf("Ethernet II, Src: %02x:%02x:%02x:%02x:%02x:%02x, Dst: %02x:%02x:%02x:%02x:%02x:%02x",
                                       eth->src[0],eth->src[1],eth->src[2],
                                       eth->src[3],eth->src[4],eth->src[5],
                                       eth->dest[0],eth->dest[1],eth->dest[2],
                                       eth->dest[3],eth->dest[4],eth->dest[5]
                                       );
+    info_frame_Eth_Hdr_List.append(info_frame_Eth_Hdr_child);
     info_frame_Eth_Hdr_child.sprintf("Destionation: %02x:%02x:%02x:%02x:%02x:%02x (%02x:%02x:%02x:%02x:%02x:%02x)",
                                              eth->dest[0],eth->dest[1],eth->dest[2],
                                              eth->dest[3],eth->dest[4],eth->dest[5],
@@ -123,7 +125,7 @@ void CaptureThread::run(){
 
             info_frame_Ip_Hdr_child.sprintf("Internet Protocol, Src: %u.%u.%u.%u, Dst: %u.%u.%u.%u",
                                                ih->saddr[0], ih->saddr[1], ih->saddr[2], ih->saddr[3],
-                                               ih->saddr[0], ih->saddr[1], ih->saddr[2], ih->saddr[3]
+                                               ih->daddr[0], ih->daddr[1], ih->daddr[2], ih->daddr[3]
                                                );
             info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
             info_frame_Ip_Hdr_child.sprintf("Version: 4 ");                                                               info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
@@ -157,6 +159,17 @@ void CaptureThread::run(){
                     tmpData->strSIP = tmpData->strSIP + sport;
                     tmpData->strDIP = tmpData->strDIP + dport;
 
+                    info_transport_Layer_child = QString("%1").arg("Transmission Control Protocol");
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+                    info_transport_Layer_child.sprintf("Src Port: %d",htons(th->sport));
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+                    info_transport_Layer_child.sprintf("Dest Port: %d",htons(th->dport));
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+                    info_transport_Layer_child.sprintf("Sequence Number: %d",htonl(th->seq_no));
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+                    info_transport_Layer_child.sprintf("Acknowledgment Number: %d", htonl(th->ack_no));
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+
                     std::cout<<"protocol: TCP"<<"\n";
                     std::cout<<"sport:"<<ntohs(th->sport)<<"\n";
                     std::cout<<"dport:"<<ntohs(th->dport)<<"\n";
@@ -164,7 +177,7 @@ void CaptureThread::run(){
                     std::cout<<"dest:"<<tmpData->strDIP<<"\n";
                     std::cout<<"lengthaaa:"<<tmpData->strLength<<"\n";
                     std::cout<<"AAAAAAAAA:"<<info_frame_Ip_Hdr.toStdString()<<endl;
-                    emit sendDetail(info_frame_Ip_Hdr_List);
+                    emit sendDetail(info_frame_bytes_List,info_frame_Eth_Hdr_List,info_frame_Ip_Hdr_List,info_frame_Trans_Layer_List);
                     emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
                     break;
                     }
@@ -176,8 +189,19 @@ void CaptureThread::run(){
                     sprintf( dport, "%d", ntohs(uh->dport)); // 目的端口
                     tmpData->strSIP = tmpData->strSIP + sport;
                     tmpData->strDIP = tmpData->strDIP + dport;
-                    std::cout<<"AAAAAAAAA:"<<info_frame_Ip_Hdr.toStdString()<<endl;
-                    emit sendDetail(info_frame_Ip_Hdr_List);
+
+                    info_transport_Layer_child = QString("%1").arg("User Datagram Protocol");
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+                    info_transport_Layer_child.sprintf("Src Port: %d",htons(uh->sport));
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+                    info_transport_Layer_child.sprintf("Dest Port: %d",htons(uh->dport));
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+                    info_transport_Layer_child.sprintf("Length: %d",htons(uh->len));
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+                    info_transport_Layer_child.sprintf("Checksum: 0x%04x", htons(uh->crc));
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+
+                    emit sendDetail(info_frame_bytes_List,info_frame_Eth_Hdr_List,info_frame_Ip_Hdr_List,info_frame_Trans_Layer_List);
                     emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
                     std::cout<<"protocol: UDP"<<"\n";
                     std::cout<<"sport:"<<ntohs(uh->sport)<<"\n";

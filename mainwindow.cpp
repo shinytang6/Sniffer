@@ -124,7 +124,7 @@ void MainWindow::on_startCapture_clicked()
     // 启动线程
     capturethread->start();
     connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString,QString)),this,SLOT(receiveData(QString,QString,QString,QString,QString)),Qt::QueuedConnection);
-    connect(capturethread,SIGNAL(sendDetail(QList<QString> )),this,SLOT(receiveDetail(QList<QString>)),Qt::QueuedConnection);
+    connect(capturethread,SIGNAL(sendDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),this,SLOT(receiveDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),Qt::QueuedConnection);
 //    QString filter = ui->textEdit->toPlainText();
 //    QByteArray ba = filter.toLatin1();
 //    capturethread->filter = ba.data();
@@ -167,7 +167,7 @@ void MainWindow::receiveData(QString data1,QString data2,QString data3,QString d
 //                    }
 }
 
-void MainWindow::receiveDetail(QList<QString> strList){
+void MainWindow::receiveDetail(QList<QString> strList1,QList<QString> strList2,QList<QString> strList3,QList<QString> strList4){
 
 
 //        QStandardItem *item;
@@ -183,11 +183,11 @@ void MainWindow::receiveDetail(QList<QString> strList){
 //            qDebug()<<"detail:"<<strList[i]<<"\n";
 //        }
 //         std::cout<<"AAAAAAAAA:"<<str.toStdString()<<endl;
-//            qDebug()<<"detail:"<<str<<"\n";
-          list1.append(strList);
-//        list2.append(strList2);
-//        list3.append(strList3);
-
+//            qDebug()<<"detail:"<<strList1<<"\n";
+          list1.append(strList1);
+          list2.append(strList2);
+          list3.append(strList3);
+          list4.append(strList4);
 
 
 }
@@ -257,36 +257,45 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index)
 
                     item = new QStandardItem(list1[row][number]);
                     mainModel2->setItem(0, 0, item);
-                            for(int i = number+1; i < list1[row].count(); i++)
-                            {
-                                 QStandardItem *Item1_1 = new QStandardItem(list1[row][i]); //子节点1_1
-                                 item->appendRow(Item1_1); //添加子节点;
-                            }
+                    for(int i = number+1; i < list1[row].count(); i++)
+                    {
+                           QStandardItem *Item1_1 = new QStandardItem(list1[row][i]); //子节点1_1
+                           item->appendRow(Item1_1); //添加子节点;
+                    }
+
+                   if(row>=1)
+                        number = list2[row-1].count();
+
+                   item = new QStandardItem(list2[row][number]);
+                   mainModel2->setItem(1, 0, item);
+                   for(int i = number+1; i < list2[row].count(); i++)
+                   {
+                       QStandardItem *Item1_1 = new QStandardItem(list2[row][i]); //子节点1_1
+                       item->appendRow(Item1_1); //添加子节点;
+                   }
 
 
+                   if(row>=1)
+                        number = list3[row-1].count();
 
-//                   if(row>=1)
-//                        number = list2[row-1].count();
+                   item = new QStandardItem(list3[row][number]);
+                   mainModel2->setItem(2, 0, item);
+                   for(int i = number+1; i < list3[row].count(); i++)
+                   {
+                       QStandardItem *Item1_1 = new QStandardItem(list3[row][i]); //子节点1_1
+                       item->appendRow(Item1_1); //添加子节点;
+                   }
 
-//                   item = new QStandardItem(list2[row][number]);
-//                   mainModel2->setItem(1, 0, item);
-//                   for(int i = number+1; i < list2[row].count(); i++)
-//                   {
-//                       QStandardItem *Item1_1 = new QStandardItem(list2[row][i]); //子节点1_1
-//                       item->appendRow(Item1_1); //添加子节点;
-//                   }
+                   if(row>=1)
+                        number = list4[row-1].count();
 
-
-//                   if(row>=1)
-//                        number = list3[row-1].count();
-
-//                   item = new QStandardItem(list3[row][number]);
-//                   mainModel2->setItem(2, 0, item);
-//                   for(int i = number+1; i < list3[row].count(); i++)
-//                   {
-//                       QStandardItem *Item1_1 = new QStandardItem(list3[row][i]); //子节点1_1
-//                       item->appendRow(Item1_1); //添加子节点;
-//                    }
+                   item = new QStandardItem(list4[row][number]);
+                   mainModel2->setItem(3, 0, item);
+                   for(int i = number+1; i < list4[row].count(); i++)
+                   {
+                       QStandardItem *Item1_1 = new QStandardItem(list4[row][i]); //子节点1_1
+                       item->appendRow(Item1_1); //添加子节点;
+                   }
 
 //     QString str;
 //     str += QStringLiteral("当前选中：%1\nrow:%2,column:%3\n").arg(index.data().toString())

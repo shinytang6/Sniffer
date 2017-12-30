@@ -21,7 +21,7 @@ public:
 
 private slots:
     void on_startCapture_clicked();
-    void receiveDetail(QList<QString> strList);
+    void receiveDetail(QList<QString> strList1,QList<QString> strList2,QList<QString> strList3,QList<QString> strList4);
 
     void receiveData(QString data1,QString data2,QString data3,QString data4,QString data5);
     void receiveDevs(pcap_if_t *alldevs);
@@ -42,6 +42,9 @@ private:
 //    int
     CaptureThread *capturethread;
     QList<QStringList> list1;
+    QList<QStringList> list2;
+    QList<QStringList> list3;
+    QList<QStringList> list4;
 };
 
 #endif // MAINWINDOW_H
