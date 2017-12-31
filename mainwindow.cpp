@@ -32,24 +32,19 @@ MainWindow::MainWindow(QWidget *parent) :
     mainModel->setHeaderData(5, Qt::Horizontal, tr("发送长度"));
 
     ui->treeView->setModel(mainModel);
-    ui->treeView->setColumnWidth(0,50);
+    ui->treeView->setColumnWidth(0,100);
     ui->treeView->setColumnWidth(1,200);
-    ui->treeView->setColumnWidth(2,200);
-    ui->treeView->setColumnWidth(3,200);
+    ui->treeView->setColumnWidth(2,300);
+    ui->treeView->setColumnWidth(3,300);
     ui->treeView->setColumnWidth(4,200);
-    ui->treeView->setColumnWidth(5,200);
+    ui->treeView->setColumnWidth(5,100);
 //    ui->comboBox->addItem("dsa");
 
     mainModel2 = new QStandardItemModel();
-//    mainModel2->setColumnCount(6);
-//    mainModel2->setHeaderData(0, Qt::Horizontal, tr("序号"));
-//    mainModel2->setHeaderData(1, Qt::Horizontal, tr("时间"));
-//    mainModel2->setHeaderData(2, Qt::Horizontal, tr("源IP地址"));
-//    mainModel2->setHeaderData(3, Qt::Horizontal, tr("目标IP地址"));
-//    mainModel2->setHeaderData(4, Qt::Horizontal, tr("协议"));
-//    mainModel2->setHeaderData(5, Qt::Horizontal, tr("发送长度"));
+    mainModel2->setColumnCount(1);
+    mainModel2->setHeaderData(0, Qt::Horizontal, tr("详细信息"));
+
     ui->detailview->setModel(mainModel2);
-//    ui->detailview->setColumnWidth(0,50);
 //    ui->detailview->setColumnWidth(1,200);
 //    ui->detailview->setColumnWidth(2,200);
 //    ui->detailview->setColumnWidth(3,200);
@@ -206,7 +201,8 @@ void MainWindow::receiveDevs(pcap_if_t *alldevs){
 
 void MainWindow::on_stopCapture_clicked()
 {
-    capturethread->isStop = true;
+    if(capturethread != NULL)
+         capturethread->isStop = true;
 }
 
 bool MainWindow::on_saveData_clicked()
