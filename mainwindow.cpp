@@ -10,6 +10,8 @@
 #include <QList>
 #include <QMetaType>
 #include <QSortFilterProxyModel>
+#include <QDir>
+#include <QFileDialog>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -68,6 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
      capturethread = new CaptureThread;
      capturethread->sniffer = &sniffer;
      capturethread->isStop = true;
+     capturethread->loadDevs = true;
      capturethread->start();
 //     capturethread->devNum = ui->comboBox->currentIndex();
      connect(capturethread,SIGNAL(sendDevs(pcap_if_t *)),this,SLOT(receiveDevs(pcap_if_t *)));
@@ -206,26 +209,50 @@ void MainWindow::on_stopCapture_clicked()
     capturethread->isStop = true;
 }
 
-void MainWindow::on_saveData_clicked()
+bool MainWindow::on_saveData_clicked()
 {
-//    capturethread = new CaptureThread;
-//    capturethread->sniffer = &sniffer;
-//    capturethread->isStop = true;
-//    capturethread->start();
-//    capturethread = NULL;
-//    capturethread->tempFile ="G:/sniferTempData/snif.txt";
+    QString toDir;
+    toDir = QFileDialog::getSaveFileName(this,
+        tr("Open Config"), "", tr("Config Files (*.ifg)"));
+
+    if (!toDir.isNull())
+    {
+           QString sourceDir = QDir::tempPath() + "/sniffer.txt" ;
+           if (sourceDir == toDir){
+               return true;
+           }
+           if (!QFile::exists(sourceDir)){
+               return false;
+           }
+           QDir *createfile     = new QDir;
+           bool exist = createfile->exists(toDir);
+           if (exist){
+
+                   createfile->remove(toDir);
+           }
+           if(!QFile::copy(sourceDir, toDir))
+           {
+               return false;
+           }
+           return true;
+    }
+
 }
 
 
 
 void MainWindow::on_loadFile_clicked()
 {
+        capturethread = NULL;
         capturethread = new CaptureThread;
         capturethread->sniffer = &sniffer;
         capturethread->isStop = true;
         capturethread->start();
-        capturethread = NULL;
+//        capturethread = NULL;
 //        capturethread->tempFile ="G:/sniferTempData/snif.txt";
+        connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString,QString)),this,SLOT(receiveData(QString,QString,QString,QString,QString)),Qt::QueuedConnection);
+        connect(capturethread,SIGNAL(sendDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),this,SLOT(receiveDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),Qt::QueuedConnection);
+        capturethread = NULL;
 }
 
 void MainWindow::on_treeView_clicked(const QModelIndex &index)
@@ -328,4 +355,9 @@ void MainWindow::on_search_clicked()
 //    sfmodel.setFilterFixedString("keyword");
 //    sfmodel->setFilterFixedString(filter);
     sfmodel->setFilterRegExp(filter);
+}
+
+void MainWindow::on_quit_clicked()
+{
+    this->close();
 }

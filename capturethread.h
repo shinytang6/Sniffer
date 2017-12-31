@@ -17,6 +17,9 @@ public:
     int devNum;
     bool isStop;
     int count;
+    bool loadFile;
+    bool saveFile;
+    bool loadDevs;
     QString filter;
     QString tempFile;
 

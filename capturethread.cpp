@@ -12,8 +12,11 @@ CaptureThread::CaptureThread(){
     count = 1;
     isStop = false;
     filter = "";
-//    tempFile = "";
+    loadDevs = false;
+    tempFile = "";
+    saveFile = false;
     tempFile = QDir::tempPath() + "/sniffer.txt" ;
+
 }
 
 void CaptureThread::run(){
@@ -22,7 +25,8 @@ void CaptureThread::run(){
 
     alldevs = sniffer->findAllDevs();
     emit sendDevs(alldevs);
-    std::cout<<"ahah"<<devNum;
+    if(loadDevs)
+        return;
     sniffer->openNetDev(devNum);
     // 将QSrting类型转化为char*传入setDevsFilter函数
     QByteArray filter_byte = filter.toLatin1();
@@ -33,11 +37,11 @@ void CaptureThread::run(){
     if(!tempFile.isEmpty()) {
          sniffer->openDumpFile((const char *)tempFile.toLocal8Bit());
     } else {
-        std::cout<<"good!!!!!"<<endl;
-        sniffer->openSavedDumpFile((const char *)tempFile.toLocal8Bit());
+//        std::cout<<"good!!!!!"<<endl;
+////        sniffer->openSavedDumpFile((const char *)tempFile.toLocal8Bit());
+//        isStop = true;
     }
     while(sniffer->captureOnce() >= 0 && !isStop){
-
 
         sniffer->saveDumpFile();
 
