@@ -14,27 +14,99 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">QPushButton{  
+    border: 1px solid #C0C0C0;  
+    background-color:#FFFFFF; 
+    border-style: solid;  
+    border-radius: 10px;  
+
+}  
+QPushButton:pressed{  
+    background-color:#EAF0FF;  
+    border: 1px solid #AAB4C4;  
+    width: 40px;  
+    height:20px;  
+    padding:0 0px;  
+    border-radius:10px;  
+}  
+</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QComboBox" name="comboBox">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>140</x>
       <y>10</y>
-      <width>381</width>
-      <height>22</height>
+      <width>401</width>
+      <height>31</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QComboBox
+{
+  
+	 subcontrol-origin: padding;
+    subcontrol-position: top right;
+    selection-background-color: #111;
+    color: white;
+    
+    border-style: solid;
+    border: 1px solid grey;
+    border-radius: 5;
+    padding: 1px 0px 1px 20px;
+}
+
+
+QComboBox:hover, QPushButton:hover
+{
+    border: 1px solid grey;
+    color: white;
+}
+
+QComboBox:editable {
+    background: red;
+    color: pink;
+}
+
+
+
+QComboBox QAbstractItemView
+{
+    border: 2px solid darkgray;
+    color: black;
+    selection-background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #111, stop: 1 #333);
+
+}
+
+
+
+
+QComboBox::drop-down 
+{
+    border: 0px; /* This seems to replace the whole arrow of the combo box */
+}
+
+/* Define a new custom arrow icon for the combo box */
+QComboBox::down-arrow {
+    image: url(G:/Sniffer/arrow_down.png);
+	margin-right: 10px;
+    width: 14px;
+    height: 14px;
+}
+</string>
     </property>
    </widget>
    <widget class="QPushButton" name="startCapture">
     <property name="geometry">
      <rect>
-      <x>700</x>
-      <y>20</y>
+      <x>620</x>
+      <y>30</y>
       <width>101</width>
       <height>51</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>开始</string>
@@ -43,8 +115,8 @@
    <widget class="QPushButton" name="stopCapture">
     <property name="geometry">
      <rect>
-      <x>880</x>
-      <y>20</y>
+      <x>750</x>
+      <y>30</y>
       <width>91</width>
       <height>51</height>
      </rect>
@@ -62,21 +134,58 @@
       <height>261</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QTreeView {
+    show-decoration-selected: 1;
+	alternate-background-color: yellow;
+}
+
+QTreeView::item {
+    border: 1px solid #d9d9d9;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+}
+
+QTreeView::item:hover {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #e7effd, stop: 1 #cbdaf1);
+    border: 1px solid #bfcde4;
+}
+
+QTreeView::item:selected {
+    border: 1px solid #567dbc;
+}
+
+QTreeView::item:selected:active{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6ea1f1, stop: 1 #567dbc);
+}
+
+QTreeView::item:selected:!active {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6b9be8, stop: 1 #577fbf);
+}</string>
+    </property>
    </widget>
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>140</x>
       <y>60</y>
-      <width>251</width>
+      <width>281</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QTextEdit {
+	border:1px solid grey;
+	border-radius: 4px;
+    padding: 1px 0px 1px 0px;
+	font-size: 16px;
+}</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>60</x>
       <y>10</y>
       <width>72</width>
       <height>21</height>
@@ -89,73 +198,59 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>40</x>
       <y>60</y>
-      <width>71</width>
+      <width>91</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>过滤器</string>
+     <string>过滤/搜索器</string>
     </property>
    </widget>
    <widget class="QPushButton" name="saveData">
     <property name="geometry">
      <rect>
-      <x>1010</x>
-      <y>20</y>
+      <x>880</x>
+      <y>30</y>
       <width>93</width>
-      <height>41</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>保存txt</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="loadFile">
-    <property name="geometry">
-     <rect>
-      <x>1130</x>
-      <y>30</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>载入</string>
+     <string>保存</string>
     </property>
    </widget>
    <widget class="QTreeView" name="detailview">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>30</x>
       <y>390</y>
-      <width>1251</width>
+      <width>1261</width>
       <height>201</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>-10</x>
-      <y>0</y>
-      <width>161</width>
-      <height>101</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <property name="styleSheet">
+     <string notr="true">
+QTreeView::item:open {
+    background-color: #c5ebfb;
+    color: blue;
+}
+QTreeView::item:selected {
+    background-color: #567dbc;
+	opacity: 0.6;
+    color: white;
+}</string>
     </property>
    </widget>
    <widget class="QPushButton" name="search">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>60</y>
+      <x>450</x>
+      <y>50</y>
       <width>91</width>
       <height>41</height>
      </rect>
@@ -167,10 +262,10 @@
    <widget class="QPushButton" name="quit">
     <property name="geometry">
      <rect>
-      <x>770</x>
-      <y>80</y>
+      <x>1010</x>
+      <y>30</y>
       <width>93</width>
-      <height>28</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="text">

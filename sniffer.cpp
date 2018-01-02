@@ -5,7 +5,7 @@
 
 Sniffer::Sniffer()
 {
-
+    iNetDevsNum = 0;
 }
 
 Sniffer::~Sniffer()
@@ -28,7 +28,7 @@ pcap_if_t * Sniffer::findAllDevs(char *szFlag){
 
 bool Sniffer::openNetDev(int devNum){
     int i;
-    if(devNum < 1 || devNum > iNetDevsNum)
+    if(devNum < 0 || devNum >= iNetDevsNum)
         {
             qDebug() << "\nInterface number out of range.\n";
             /* 释放设备列表 */

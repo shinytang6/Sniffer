@@ -8,12 +8,12 @@
 #include <QDateTime>
 #include <QMetaType>
 CaptureThread::CaptureThread(){
-    devNum = 6;
+    devNum = 0;
     count = 1;
     isStop = false;
     filter = "";
     loadDevs = false;
-    tempFile = "";
+
     saveFile = false;
     tempFile = QDir::tempPath() + "/sniffer.txt" ;
 
@@ -28,10 +28,13 @@ void CaptureThread::run(){
     if(loadDevs)
         return;
     sniffer->openNetDev(devNum);
-    // 将QSrting类型转化为char*传入setDevsFilter函数
-    QByteArray filter_byte = filter.toLatin1();
-    std::cout<<"filter condition: "<<filter_byte.data();
-    sniffer->setDevsFilter(filter_byte.data());
+    if (filter!=""){
+        // 将QSrting类型转化为char*传入setDevsFilter函数
+        QByteArray filter_byte = filter.toLatin1();
+        std::cout<<"filter condition: "<<filter_byte.data();
+        sniffer->setDevsFilter(filter_byte.data());
+    }
+
 
     std::cout<<"save file name:"<<(const char *)tempFile.toLocal8Bit()<<endl;
     if(!tempFile.isEmpty()) {
@@ -42,8 +45,8 @@ void CaptureThread::run(){
 //        isStop = true;
     }
     while(sniffer->captureOnce() >= 0 && !isStop){
-
-        sniffer->saveDumpFile();
+        if(!tempFile.isEmpty())
+            sniffer->saveDumpFile();
 
         std::cout<<"save file name:"<<(const char *)tempFile.toLocal8Bit()<<endl;
 
@@ -182,7 +185,7 @@ void CaptureThread::run(){
                     std::cout<<"lengthaaa:"<<tmpData->strLength<<"\n";
                     std::cout<<"AAAAAAAAA:"<<info_frame_Ip_Hdr.toStdString()<<endl;
                     emit sendDetail(info_frame_bytes_List,info_frame_Eth_Hdr_List,info_frame_Ip_Hdr_List,info_frame_Trans_Layer_List);
-                    emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
+                    emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto), QString::number(cap_length, 10));
                     break;
                     }
                 case UDP_SIG:{
@@ -206,7 +209,7 @@ void CaptureThread::run(){
                     info_frame_Trans_Layer_List.append(info_transport_Layer_child);
 
                     emit sendDetail(info_frame_bytes_List,info_frame_Eth_Hdr_List,info_frame_Ip_Hdr_List,info_frame_Trans_Layer_List);
-                    emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
+                    emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::number(cap_length, 10));
                     std::cout<<"protocol: UDP"<<"\n";
                     std::cout<<"sport:"<<ntohs(uh->sport)<<"\n";
                     std::cout<<"dport:"<<ntohs(uh->dport)<<"\n";
@@ -216,7 +219,7 @@ void CaptureThread::run(){
                     }
                 case ICMP_SIG:{
                     tmpData->strProto = "ICMP";
-                    emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
+                    emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::number(cap_length, 10));
                     break;
                 }
                 default:{

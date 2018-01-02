@@ -26,8 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mainModel->setColumnCount(6);
     mainModel->setHeaderData(0, Qt::Horizontal, tr("序号"));
     mainModel->setHeaderData(1, Qt::Horizontal, tr("时间"));
-    mainModel->setHeaderData(2, Qt::Horizontal, tr("源IP地址"));
-    mainModel->setHeaderData(3, Qt::Horizontal, tr("目标IP地址"));
+    mainModel->setHeaderData(2, Qt::Horizontal, tr("源地址"));
+    mainModel->setHeaderData(3, Qt::Horizontal, tr("目标地址"));
     mainModel->setHeaderData(4, Qt::Horizontal, tr("协议"));
     mainModel->setHeaderData(5, Qt::Horizontal, tr("发送长度"));
 
@@ -114,6 +114,7 @@ void MainWindow::on_startCapture_clicked()
 //    QString filter = ui->textEdit->toPlainText();
 //    QByteArray ba = filter.toLatin1();
 //    capturethread->filter = ba.data();
+
     capturethread->devNum = ui->comboBox->currentIndex();
     QString filter = ui->textEdit->toPlainText();
     capturethread->filter = filter;
@@ -124,9 +125,7 @@ void MainWindow::on_startCapture_clicked()
     capturethread->start();
     connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString,QString)),this,SLOT(receiveData(QString,QString,QString,QString,QString)),Qt::QueuedConnection);
     connect(capturethread,SIGNAL(sendDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),this,SLOT(receiveDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),Qt::QueuedConnection);
-//    QString filter = ui->textEdit->toPlainText();
-//    QByteArray ba = filter.toLatin1();
-//    capturethread->filter = ba.data();
+
 }
 
 void MainWindow::receiveData(QString data1,QString data2,QString data3,QString data4,QString data5){
@@ -145,6 +144,7 @@ void MainWindow::receiveData(QString data1,QString data2,QString data3,QString d
         item = new QStandardItem(data5);
         mainModel->setItem(iPosition, 5, item);
         iPosition = iPosition + 1;
+
 
 //        item = new QStandardItem(frame);
 //        mainModel2->setItem(0, 0, item);
@@ -195,7 +195,10 @@ void MainWindow::receiveDetail(QList<QString> strList1,QList<QString> strList2,Q
 void MainWindow::receiveDevs(pcap_if_t *alldevs){
     for(dev= alldevs; dev != NULL; dev= dev->next)
     {
-            ui->comboBox->addItem(dev->description);
+            int first_quotes = QString(QLatin1String(dev->description)).indexOf("'");
+            int last_quotes = QString(QLatin1String(dev->description)).lastIndexOf("'");
+            int len_content = last_quotes-first_quotes-1;
+            ui->comboBox->addItem(QString(QLatin1String(dev->description)).mid(first_quotes+1, len_content));
     }
 }
 
@@ -262,6 +265,10 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index)
     else{
             lineNum = index.sibling(index.row(),0).data().toString();
     }
+
+//    for( int i = 0; i < mainModel2->columnCount(); ++i ) {
+//            mainModel2->item( index.row(), i )->setBackground( Qt::red );
+//    }
 //    printf("\n");
 //    printf("treview index is %s",ui->treeView->currentIndex().model());
 //    QStandardItemModel* model = static_cast<QStandardItemModel*>(ui->treeView->model());
@@ -357,3 +364,4 @@ void MainWindow::on_quit_clicked()
 {
     this->close();
 }
+
