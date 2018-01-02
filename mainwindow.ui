@@ -212,7 +212,7 @@ QTreeView::item:selected:!active {
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>保存</string>
+     <string>打开</string>
     </property>
    </widget>
    <widget class="QTreeView" name="detailview">
@@ -260,20 +260,20 @@ QTreeView::item:selected {
      </rect>
     </property>
     <property name="text">
-     <string>退出</string>
+     <string>保存</string>
     </property>
    </widget>
    <widget class="QPushButton" name="loadFile">
     <property name="geometry">
      <rect>
-      <x>1180</x>
-      <y>50</y>
-      <width>93</width>
-      <height>28</height>
+      <x>1130</x>
+      <y>30</y>
+      <width>91</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>载入</string>
+     <string>退出</string>
     </property>
    </widget>
   </widget>
