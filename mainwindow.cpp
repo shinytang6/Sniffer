@@ -12,6 +12,7 @@
 #include <QSortFilterProxyModel>
 #include <QDir>
 #include <QFileDialog>
+#include <QAbstractItemModel>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -243,6 +244,8 @@ bool MainWindow::on_saveData_clicked()
 void MainWindow::on_loadFile_clicked()
 {
 
+    while(mainModel->removeRow(0)){}  //清空所有行，没有别的好的办法。。
+    iPosition = 0;
         QString open_file_name = QFileDialog::getOpenFileName(NULL,"标题",".","*.txt");
 
         capturethread = new CaptureThread;
@@ -252,8 +255,6 @@ void MainWindow::on_loadFile_clicked()
         capturethread->tempFile = open_file_name;
         capturethread->start();
 
-//        capturethread = NULL;
-//        capturethread->tempFile ="G:/sniferTempData/snif.txt";
         connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString,QString)),this,SLOT(receiveData(QString,QString,QString,QString,QString)),Qt::QueuedConnection);
         connect(capturethread,SIGNAL(sendDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),this,SLOT(receiveDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),Qt::QueuedConnection);
         capturethread = NULL;
