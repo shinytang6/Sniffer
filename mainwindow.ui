@@ -44,39 +44,29 @@ QPushButton:pressed{
     <property name="styleSheet">
      <string notr="true">QComboBox
 {
-  
-	 subcontrol-origin: padding;
+	subcontrol-origin: padding;
     subcontrol-position: top right;
     selection-background-color: #111;
-    color: white;
-    
+    font-size: 16px;
     border-style: solid;
     border: 1px solid grey;
     border-radius: 5;
-    padding: 1px 0px 1px 20px;
+    padding: 1px 0px 1px 10px;
 }
-
 
 QComboBox:hover, QPushButton:hover
 {
     border: 1px solid grey;
-    color: white;
 }
 
 QComboBox:editable {
     background: red;
-    color: pink;
-}
-
-
-
-QComboBox QAbstractItemView
-{
-    border: 2px solid darkgray;
     color: black;
-    selection-background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #111, stop: 1 #333);
-
 }
+
+
+
+
 
 
 
@@ -93,6 +83,7 @@ QComboBox::down-arrow {
     width: 14px;
     height: 14px;
 }
+
 </string>
     </property>
    </widget>

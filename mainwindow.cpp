@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //    ui->detailview->setColumnWidth(4,200);
 //    ui->detailview->setColumnWidth(5,200);
 
-
+    ui->comboBox->setCurrentIndex(0);
 
 
 

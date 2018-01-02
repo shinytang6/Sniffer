@@ -3,7 +3,6 @@
 #include <QThread.h>
 #include <QTreeView>
 #include "sniffer.h"
-#include "maintreeview.h"
 
 class CaptureThread : public QThread
 {
@@ -11,7 +10,6 @@ class CaptureThread : public QThread
 public:
     CaptureThread();
     Sniffer *sniffer;
-    MainTreeView *mainTree ;
     pcap_if_t *alldevs;
     pcap_if_t *dev;
     int devNum;

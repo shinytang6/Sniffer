@@ -27,8 +27,7 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     sniffer.cpp \
-    capturethread.cpp \
-    maintreeview.cpp
+    capturethread.cpp
 
 HEADERS += \
         mainwindow.h \
