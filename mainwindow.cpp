@@ -39,61 +39,24 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setColumnWidth(3,300);
     ui->treeView->setColumnWidth(4,200);
     ui->treeView->setColumnWidth(5,100);
-//    ui->comboBox->addItem("dsa");
 
     mainModel2 = new QStandardItemModel();
     mainModel2->setColumnCount(1);
     mainModel2->setHeaderData(0, Qt::Horizontal, tr("详细信息"));
 
     ui->detailview->setModel(mainModel2);
-//    ui->detailview->setColumnWidth(1,200);
-//    ui->detailview->setColumnWidth(2,200);
-//    ui->detailview->setColumnWidth(3,200);
-//    ui->detailview->setColumnWidth(4,200);
-//    ui->detailview->setColumnWidth(5,200);
 
     ui->comboBox->setCurrentIndex(0);
-
-
-
-
     iPosition = 0;
-//    CaptureThread *capturethread = new CaptureThread();
-//     capturethread->start();
-//     capturethread->sniffer = &sniffer;
 
+    capturethread = new CaptureThread;
+    capturethread->sniffer = &sniffer;
+    capturethread->isStop = true;
+    capturethread->loadDevs = true;
+    capturethread->start();
+    connect(capturethread,SIGNAL(sendDevs(pcap_if_t *)),this,SLOT(receiveDevs(pcap_if_t *)));
+    capturethread = NULL;
 
-     capturethread = new CaptureThread;
-     capturethread->sniffer = &sniffer;
-     capturethread->isStop = true;
-     capturethread->loadDevs = true;
-     capturethread->start();
-//     capturethread->devNum = ui->comboBox->currentIndex();
-     connect(capturethread,SIGNAL(sendDevs(pcap_if_t *)),this,SLOT(receiveDevs(pcap_if_t *)));
-     capturethread = NULL;
-//    Sniffer *snif = new Sniffer;
-
-//    connect(this,SIGNAL(sendData()),this,SLOT(receiveData()));
-//    QStandardItem *item;
-//    item = new QStandardItem("5");
-//    mainModel->setItem(0, 0, item);
-
-//    item = new QStandardItem("hah");
-//    mainModel->setItem(0, 1, item);
-//     item = new QStandardItem("127.0.1.1");
-//        mainModel->setItem(0, 2, item);
-//        item = new QStandardItem("197.235.5.2");
-//        mainModel->setItem(0, 3, item);
-//        item = new QStandardItem("ip");
-//        mainModel->setItem(0, 4, item);
-//        item = new QStandardItem("20");
-//        mainModel->setItem(0, 5, item);
-//    for (int row = 0; row < 4; ++row) {
-//        for (int column = 0; column < 2; ++column) {
-//            QModelIndex index = model->index(row, column, QModelIndex());
-//            model->setItem(1,2, QVariant("dsasa"));
-//        }
-//    }
 }
 
 MainWindow::~MainWindow()
@@ -109,18 +72,13 @@ void MainWindow::on_startCapture_clicked()
     }
 
     capturethread = new CaptureThread;
-//    CaptureThread *capturethread = new CaptureThread();
     capturethread->sniffer = &sniffer;
     capturethread->isStop = false;
-//    QString filter = ui->textEdit->toPlainText();
-//    QByteArray ba = filter.toLatin1();
-//    capturethread->filter = ba.data();
-
+    // 获取过滤信息和网卡
     capturethread->devNum = ui->comboBox->currentIndex();
     QString filter = ui->textEdit->toPlainText();
     capturethread->filter = filter;
-//    QByteArray ba = filter.toLatin1();
-//    capturethread->filter = ba.data();
+
 
     // 启动线程
     capturethread->start();
@@ -145,51 +103,14 @@ void MainWindow::receiveData(QString data1,QString data2,QString data3,QString d
         item = new QStandardItem(data5);
         mainModel->setItem(iPosition, 5, item);
         iPosition = iPosition + 1;
-
-
-//        item = new QStandardItem(frame);
-//        mainModel2->setItem(0, 0, item);
-//        for(int i = 0; i < frame_list.count(); i++){
-//                 QStandardItem* itemChild = new QStandardItem(frame_list[i]);
-//                 item->appendRow(itemChild);
-//        }
-
-//        QStandardItem* itemProject = new QStandardItem(index.data().toString());
-//        mainModel2->appendRow(itemProject);
-//        QStandardItem* itemChild = new QStandardItem(QStringLiteral("length"));
-//        itemProject->appendRow(itemChild);
-
-//        QTreeWidgetItem *Item1 = new QTreeWidgetItem(mainModel2,QStringList(info_frame_bytes));
-//                    for(int i = 0; i < info_frame_bytes_List.count(); i++)
-//                    {
-//                        QTreeWidgetItem *Item1_1 = new QTreeWidgetItem(Item1,QStringList(info_frame_bytes_List[i])); //子节点1_1
-//                        Item1->addChild(Item1_1); //添加子节点
-//                    }
 }
 
 void MainWindow::receiveDetail(QList<QString> strList1,QList<QString> strList2,QList<QString> strList3,QList<QString> strList4){
 
-
-//        QStandardItem *item;
-//        item = new QStandardItem(str);
-//        mainModel2->setItem(iPosition, 0, item);
-
-
-
-//        for(int i = 0; i < strList.count(); i++)
-//        {
-//             QStandardItem *Item1_1 = new QStandardItem(strList[i]); //子节点1_1
-//             item->appendRow(Item1_1); //添加子节点
-//            qDebug()<<"detail:"<<strList[i]<<"\n";
-//        }
-//         std::cout<<"AAAAAAAAA:"<<str.toStdString()<<endl;
-//            qDebug()<<"detail:"<<strList1<<"\n";
           list1.append(strList1);
           list2.append(strList2);
           list3.append(strList3);
           list4.append(strList4);
-
-
 }
 
 
@@ -271,28 +192,6 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index)
     else{
             lineNum = index.sibling(index.row(),0).data().toString();
     }
-
-//    for( int i = 0; i < mainModel2->columnCount(); ++i ) {
-//            mainModel2->item( index.row(), i )->setBackground( Qt::red );
-//    }
-//    printf("\n");
-//    printf("treview index is %s",ui->treeView->currentIndex().model());
-//    QStandardItemModel* model = static_cast<QStandardItemModel*>(ui->treeView->model());
-//    QModelIndex currentIndex = ui->treeView->currentIndex();
-//    QStandardItem* currentItem = model->itemFromIndex(currentIndex);
-//    QStandardItem *item;
-//    item = new QStandardItem(ui->treeView->currentIndex().data());
-//    mainModel2->setItem(0, 1,item);
-//    QTreeWidgetItem *Item1 = new QTreeWidgetItem(ui->detailview,currentItem);
-//     QStandardItem* itemProject = new QStandardItem(index.data().toString());
-//     mainModel2->appendRow(itemProject);
-//     QStandardItem* itemChild = new QStandardItem(QStringLiteral("length"));
-//     itemProject->appendRow(itemChild);
-
-
-
-//                    qDebug()<<"detail:"<<list2[ui->treeView->currentIndex().row()]<<"\n";
-
 
                     QStandardItem *item;
                     bool ok;

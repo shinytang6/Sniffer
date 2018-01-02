@@ -118,11 +118,6 @@ int Sniffer::captureOnce(){
    return   pcap_next_ex( adhandle, &header, &pkt_data);
 }
 
-//int Sniffer::captureLoop(){
-//    while(pcap_next_ex( adhandle, &header, &pkt_data)){
-//        return pcap_next_ex( adhandle, &header, &pkt_data)
-//    }
-//}
 
 bool Sniffer::openDumpFile(const char *szFileName){
     dumpfile = pcap_dump_open(adhandle, szFileName);

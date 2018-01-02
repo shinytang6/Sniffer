@@ -202,7 +202,7 @@ QTreeView::item:selected:!active {
    <widget class="QPushButton" name="saveData">
     <property name="geometry">
      <rect>
-      <x>880</x>
+      <x>1010</x>
       <y>30</y>
       <width>93</width>
       <height>51</height>
@@ -212,7 +212,7 @@ QTreeView::item:selected:!active {
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>打开</string>
+     <string>保存</string>
     </property>
    </widget>
    <widget class="QTreeView" name="detailview">
@@ -253,27 +253,27 @@ QTreeView::item:selected {
    <widget class="QPushButton" name="quit">
     <property name="geometry">
      <rect>
-      <x>1010</x>
+      <x>1140</x>
       <y>30</y>
       <width>93</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>保存</string>
+     <string>退出</string>
     </property>
    </widget>
    <widget class="QPushButton" name="loadFile">
     <property name="geometry">
      <rect>
-      <x>1130</x>
+      <x>880</x>
       <y>30</y>
       <width>91</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>退出</string>
+     <string>打开</string>
     </property>
    </widget>
   </widget>
