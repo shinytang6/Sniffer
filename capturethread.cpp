@@ -13,7 +13,7 @@ CaptureThread::CaptureThread(){
     isStop = false;
     filter = "";
     loadDevs = false;
-
+    loadFile = false;
     saveFile = false;
     tempFile = QDir::tempPath() + "/sniffer.txt" ;
 
@@ -37,17 +37,23 @@ void CaptureThread::run(){
 
 
     std::cout<<"save file name:"<<(const char *)tempFile.toLocal8Bit()<<endl;
-    if(!tempFile.isEmpty()) {
+    if(!tempFile.isEmpty() && !loadFile) {
          sniffer->openDumpFile((const char *)tempFile.toLocal8Bit());
     } else {
 //        std::cout<<"good!!!!!"<<endl;
 ////        sniffer->openSavedDumpFile((const char *)tempFile.toLocal8Bit());
 //        isStop = true;
     }
-    while(sniffer->captureOnce() >= 0 && !isStop){
-        if(!tempFile.isEmpty())
-            sniffer->saveDumpFile();
 
+//    if(loadFile){
+//        sniffer->openSavedDumpFile(tempFile.toLocal8Bit());
+//        return;
+//    }
+    int packNum = 1;
+    while((sniffer->captureOnce() >= 0 && !isStop) || ( sniffer->openSavedDumpFile(tempFile.toLocal8Bit(),packNum)  &&loadFile) ){
+        if(!tempFile.isEmpty() && !loadFile)
+            sniffer->saveDumpFile();
+        packNum = packNum + 1;
         std::cout<<"save file name:"<<(const char *)tempFile.toLocal8Bit()<<endl;
 
 //    sniffer->analyze_frame(sniffer->pkt_data,sniffer->header);

@@ -37,7 +37,7 @@ public:
     void captureByCallBack(snifferCB func);						// 以回调函数方式捕获数据
     void saveDumpFile();      //保存数据包到堆文件
     bool openDumpFile(const char *szFileName);
-    bool openSavedDumpFile(const char *szFileName);
+    bool openSavedDumpFile(const char *szFileName,int packNum);
 
     void analyze_frame(const u_char *pkt_data,struct pcap_pkthdr *header);     // 分析Mac帧
     void analyze_ipv4(const u_char *pkt_data,tempSnifferData *tmpData);      // 分析ipv4
@@ -49,6 +49,9 @@ public:
 
     struct pcap_pkthdr *header;
     const u_char *pkt_data;
+
+    struct pcap_pkthdr *new_header;
+    const u_char *_new_pkt_data;
 
     /*void createDevsStr(char *source, char *szFileName);				// WinPcap语法创建一个源字符串
     void freeNetDevsMem();											// 释放网络设备信息占据的堆内存

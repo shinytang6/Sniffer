@@ -263,6 +263,19 @@ QTreeView::item:selected {
      <string>退出</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="loadFile">
+    <property name="geometry">
+     <rect>
+      <x>1180</x>
+      <y>50</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>载入</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

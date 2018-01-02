@@ -242,11 +242,16 @@ bool MainWindow::on_saveData_clicked()
 
 void MainWindow::on_loadFile_clicked()
 {
-        capturethread = NULL;
+
+        QString open_file_name = QFileDialog::getOpenFileName(NULL,"标题",".","*.txt");
+
         capturethread = new CaptureThread;
         capturethread->sniffer = &sniffer;
         capturethread->isStop = true;
+        capturethread->loadFile = true;
+        capturethread->tempFile = open_file_name;
         capturethread->start();
+
 //        capturethread = NULL;
 //        capturethread->tempFile ="G:/sniferTempData/snif.txt";
         connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString,QString)),this,SLOT(receiveData(QString,QString,QString,QString,QString)),Qt::QueuedConnection);

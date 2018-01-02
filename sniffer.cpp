@@ -136,7 +136,7 @@ void Sniffer::saveDumpFile(){
         pcap_dump((unsigned char *)dumpfile, header, pkt_data);
 }
 
-bool Sniffer::openSavedDumpFile(const char *szFileName){
+bool Sniffer::openSavedDumpFile(const char *szFileName,int packNum){
     char source[PCAP_BUF_SIZE];
     int i;
     if ( pcap_createsrcstr( source,         // 源字符串
@@ -148,25 +148,37 @@ bool Sniffer::openSavedDumpFile(const char *szFileName){
                                 ) != 0)
         {
             fprintf(stderr,"\nError creating a source string\n");
-            return -1;
+            return false;
         }
     else {
         openNetDev(source);
+//        return pcap_next_ex( fp, &header, &pkt_data);
+        int num = 0;
+        if(packNum == 1)
+            return pcap_next_ex( fp, &header, &pkt_data);
         while((pcap_next_ex( fp, &header, &pkt_data)) >= 0)
            {
-               /* 打印pkt时间戳和pkt长度 */
-               printf("%ld:%ld (%ld)\n", header->ts.tv_sec, header->ts.tv_usec, header->len);
+                num = num + 1;
+//               /* 打印pkt时间戳和pkt长度 */
+//               printf("%ld:%ld (%ld)\n", header->ts.tv_sec, header->ts.tv_usec, header->len);
 
-               /* 打印数据包 */
-               for (i=1; (i < header->caplen + 1 ) ; i++)
-               {
-                   printf("%.2x ", pkt_data[i-1]);
-                   if ( (i % 16) == 0) printf("\n");
-               }
+//               /* 打印数据包 */
+//               for (i=1; (i < header->caplen + 1 ) ; i++)
+//               {
+//                   printf("%.2x ", pkt_data[i-1]);
+//                   if ( (i % 16) == 0) printf("\n");
+//               }
 
-               printf("\n\n");
-               printf("\n\n");
+//               printf("\n\n");
+//               printf("\n\n");
+
+                if(num+1 == packNum){
+                    if(pcap_next_ex( fp, &header, &pkt_data) >= 0)
+                        return pcap_next_ex( fp, &header, &pkt_data);
+                }
            }
+
+        return false;
 
     }
 }
