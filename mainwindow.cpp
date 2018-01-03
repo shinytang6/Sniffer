@@ -193,6 +193,7 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index)
             lineNum = index.sibling(index.row(),0).data().toString();
     }
 
+
                     QStandardItem *item;
                     bool ok;
                     int row = lineNum.toInt(&ok,10)-1;
@@ -231,16 +232,21 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index)
                        item->appendRow(Item1_3); //添加子节点;
                    }
 
-                   if(row>=1)
-                        number = list4[row-1].count();
 
-                   item = new QStandardItem(list4[row][number]);
-                   mainModel2->setItem(3, 0, item);
-                   for(int i = number+1; i < list4[row].count(); i++)
-                   {
-                       QStandardItem *Item1_4 = new QStandardItem(list4[row][i]); //子节点1_4
-                       item->appendRow(Item1_4); //添加子节点;
-                   }
+                   if(row>=1)
+                       number = list4[row-1].count();
+                   // 判断是否为ARP
+                   if(list4[row].size()!=list4[row-1].size()){
+                       item = new QStandardItem(list4[row][number]);
+
+                       mainModel2->setItem(3, 0, item);
+                           for(int i = number+1; i < list4[row].count(); i++)
+                           {
+                                QStandardItem *Item1_4 = new QStandardItem(list4[row][i]); //子节点1_4
+                                item->appendRow(Item1_4); //添加子节点;
+                           }
+                    }
+
 
 
 
@@ -262,6 +268,12 @@ void MainWindow::on_search_clicked()
     sfmodel->setFilterKeyColumn(-1);
 //    sfmodel.setFilterFixedString("keyword");
 //    sfmodel->setFilterFixedString(filter);
+    ui->treeView->setColumnWidth(0,100);
+    ui->treeView->setColumnWidth(1,200);
+    ui->treeView->setColumnWidth(2,300);
+    ui->treeView->setColumnWidth(3,300);
+    ui->treeView->setColumnWidth(4,200);
+    ui->treeView->setColumnWidth(5,100);
     sfmodel->setFilterRegExp(filter);
 }
 

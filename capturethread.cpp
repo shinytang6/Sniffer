@@ -110,7 +110,7 @@ void CaptureThread::run(){
             std::cout<<"protocol: arp"<<"\n";
             arphdr *arph = (arphdr *)(sniffer->pkt_data+ 14);
             char szSaddr[24], szDaddr[24];
-            sprintf(szSaddr,"%x.%x.%x.%x.%x.%x",arph->ar_srcip[0], arph->ar_srcip[1], arph->ar_srcip[2], arph->ar_srcmac[3],arph->ar_srcmac[4],arph->ar_srcmac[5]);
+            sprintf(szSaddr,"%x.%x.%x.%x.%x.%x",arph->ar_srcmac[0], arph->ar_srcmac[1], arph->ar_srcmac[2], arph->ar_srcmac[3],arph->ar_srcmac[4],arph->ar_srcmac[5]);
             sprintf(szDaddr,"%x.%x.%x.%x.%x.%x",arph->ar_destmac[0], arph->ar_destmac[1], arph->ar_destmac[2], arph->ar_destmac[3],arph->ar_destmac[4],arph->ar_destmac[5]);
             std::cout<<"arp source:"<<szSaddr<<endl;
             std::cout<<"arp dest:"<<szDaddr<<endl;
@@ -118,6 +118,30 @@ void CaptureThread::run(){
             tmpData->strDIP = szDaddr;
             tmpData->strProto = "ARP";
             tmpData->strLength = "28";
+
+            info_frame_Ip_Hdr_child.sprintf("Address Resolution Protocol(reply)"
+                                               );
+            info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+
+            info_frame_Ip_Hdr_child.sprintf("Hardware type: (%d)", htons(arph->ar_hrd));           info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child.sprintf("Protocol type: %d", htons(arph->ar_pro));                               info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child.sprintf("Hardware size: %d", htons(arph->ar_hln));                                       info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+
+            info_frame_Ip_Hdr_child.sprintf("Protocol size: %d",  htons(arph->ar_pln));
+            info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child.sprintf("Opcode: 0x%04x",  htons(arph->ar_op));
+            info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+
+            info_frame_Ip_Hdr_child.sprintf("Sender Mac Address: %x.%x.%x.%x.%x.%x", arph->ar_srcmac[0],arph->ar_srcmac[1],arph->ar_srcmac[2],arph->ar_srcmac[3],arph->ar_srcmac[4],arph->ar_srcmac[5]);
+            info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child.sprintf("Sender IP Address: %u.%u.%u.%u", arph->ar_srcip[0],arph->ar_srcip[1],arph->ar_srcip[2],arph->ar_srcip[3]);
+            info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child.sprintf("Target Mac Address: %x.%x.%x.%x.%x.%x ", arph->ar_destmac[0],arph->ar_destmac[1],arph->ar_destmac[2],arph->ar_destmac[3],arph->ar_destmac[4],arph->ar_destmac[5]);
+            info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+            info_frame_Ip_Hdr_child.sprintf("Target IP Address: %u.%u.%u.%u", arph->ar_destip[0],arph->ar_destip[1],arph->ar_destip[2],arph->ar_destip[3]);
+            info_frame_Ip_Hdr_List.append(info_frame_Ip_Hdr_child);
+//            info_frame_Trans_Layer_List= ;
+            emit sendDetail(info_frame_bytes_List,info_frame_Eth_Hdr_List,info_frame_Ip_Hdr_List,info_frame_Trans_Layer_List);
             emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::fromStdString(tmpData->strLength));
             break;
         }
@@ -145,8 +169,8 @@ void CaptureThread::run(){
             sprintf( len, "%d", ip_len);
             tmpData->strLength = len;
             char szSaddr[24], szDaddr[24];
-            sprintf(szSaddr,"%d.%d.%d.%d:",ih->saddr[0], ih->saddr[1], ih->saddr[2], ih->saddr[3]);
-            sprintf(szDaddr," %d.%d.%d.%d:",ih->daddr[0], ih->daddr[1], ih->daddr[2], ih->daddr[3]);
+            sprintf(szSaddr,"%d.%d.%d.%d",ih->saddr[0], ih->saddr[1], ih->saddr[2], ih->saddr[3]);
+            sprintf(szDaddr," %d.%d.%d.%d",ih->daddr[0], ih->daddr[1], ih->daddr[2], ih->daddr[3]);
             tmpData->strSIP = szSaddr;
             tmpData->strDIP = szDaddr;
             std::cout<<"protocol: ipv4"<<"\n";
@@ -157,8 +181,8 @@ void CaptureThread::run(){
                     tmpData->strProto = "TCP";
                     char sport[10], dport[10];
                     tcphdr *th = (tcphdr *)(sniffer->pkt_data + 14 + ip_len);		// 获得 TCP 协议头
-                    sprintf( sport, "%d", ntohs(th->sport)); // 源端口
-                    sprintf( dport, "%d", ntohs(th->dport)); // 目的端口
+                    sprintf( sport, ":%d", ntohs(th->sport)); // 源端口
+                    sprintf( dport, ":%d", ntohs(th->dport)); // 目的端口
                     tmpData->strSIP = tmpData->strSIP + sport;
                     tmpData->strDIP = tmpData->strDIP + dport;
 
@@ -188,8 +212,8 @@ void CaptureThread::run(){
                     tmpData->strProto = "UDP";
                     char sport[10], dport[10];
                     udphdr *uh = (udphdr *)(sniffer->pkt_data + 14 + ip_len);		// 获得 UDP 协议头
-                    sprintf( sport, "%d", ntohs(uh->sport)); // 源端口
-                    sprintf( dport, "%d", ntohs(uh->dport)); // 目的端口
+                    sprintf( sport, ":%d", ntohs(uh->sport)); // 源端口
+                    sprintf( dport, ":%d", ntohs(uh->dport)); // 目的端口
                     tmpData->strSIP = tmpData->strSIP + sport;
                     tmpData->strDIP = tmpData->strDIP + dport;
 
@@ -215,6 +239,16 @@ void CaptureThread::run(){
                     }
                 case ICMP_SIG:{
                     tmpData->strProto = "ICMP";
+                    icmphdr *icmph = (icmphdr *)(sniffer->pkt_data + 14 + ip_len);
+                    info_transport_Layer_child = QString("%1").arg("Internet Control Message Protocol");
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+                    info_transport_Layer_child.sprintf("Type: %d",icmph->icmp_type);
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+                    info_transport_Layer_child.sprintf("Code: %d",icmph->code);
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+                    info_transport_Layer_child.sprintf("Checksum: 0x%04x",htons(icmph->chk_sum));
+                    info_frame_Trans_Layer_List.append(info_transport_Layer_child);
+                    emit sendDetail(info_frame_bytes_List,info_frame_Eth_Hdr_List,info_frame_Ip_Hdr_List,info_frame_Trans_Layer_List);
                     emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),QString::number(cap_length, 10));
                     break;
                 }
