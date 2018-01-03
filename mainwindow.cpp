@@ -43,12 +43,9 @@ MainWindow::MainWindow(QWidget *parent) :
     mainModel2 = new QStandardItemModel();
     mainModel2->setColumnCount(1);
     mainModel2->setHeaderData(0, Qt::Horizontal, tr("详细信息"));
-
     ui->detailview->setModel(mainModel2);
-
     ui->comboBox->setCurrentIndex(0);
     iPosition = 0;
-
     capturethread = new CaptureThread;
     capturethread->sniffer = &sniffer;
     capturethread->isStop = true;
@@ -82,8 +79,10 @@ void MainWindow::on_startCapture_clicked()
 
     // 启动线程
     capturethread->start();
-    connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString,QString)),this,SLOT(receiveData(QString,QString,QString,QString,QString)),Qt::QueuedConnection);
-    connect(capturethread,SIGNAL(sendDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),this,SLOT(receiveDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),Qt::QueuedConnection);
+    connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString,QString)),
+            this,SLOT(receiveData(QString,QString,QString,QString,QString)),Qt::QueuedConnection);
+    connect(capturethread,SIGNAL(sendDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),
+            this,SLOT(receiveDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),Qt::QueuedConnection);
 
 }
 
@@ -105,7 +104,9 @@ void MainWindow::receiveData(QString data1,QString data2,QString data3,QString d
         iPosition = iPosition + 1;
 }
 
-void MainWindow::receiveDetail(QList<QString> strList1,QList<QString> strList2,QList<QString> strList3,QList<QString> strList4){
+void MainWindow::receiveDetail(QList<QString> strList1,QList<QString> strList2,
+                               QList<QString> strList3,QList<QString> strList4)
+{
 
           list1.append(strList1);
           list2.append(strList2);
@@ -134,7 +135,7 @@ bool MainWindow::on_saveData_clicked()
 {
     QString toDir;
     toDir = QFileDialog::getSaveFileName(this,
-        tr("Open Config"), "", tr("Config Files (*.ifg)"));
+        tr("Open Config"), "", tr("Config Files (*.txt)"));
 
     if (!toDir.isNull())
     {
@@ -167,18 +168,20 @@ void MainWindow::on_loadFile_clicked()
 
     while(mainModel->removeRow(0)){}  //清空所有行，没有别的好的办法。。
     iPosition = 0;
-        QString open_file_name = QFileDialog::getOpenFileName(NULL,"标题",".","*.txt");
+    QString open_file_name = QFileDialog::getOpenFileName(NULL,"标题",".","*.txt");
 
-        capturethread = new CaptureThread;
-        capturethread->sniffer = &sniffer;
-        capturethread->isStop = true;
-        capturethread->loadFile = true;
-        capturethread->tempFile = open_file_name;
-        capturethread->start();
+    capturethread = new CaptureThread;
+    capturethread->sniffer = &sniffer;
+    capturethread->isStop = true;
+    capturethread->loadFile = true;
+    capturethread->tempFile = open_file_name;
+    capturethread->start();
 
-        connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString,QString)),this,SLOT(receiveData(QString,QString,QString,QString,QString)),Qt::QueuedConnection);
-        connect(capturethread,SIGNAL(sendDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),this,SLOT(receiveDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),Qt::QueuedConnection);
-        capturethread = NULL;
+    connect(capturethread,SIGNAL(sendData(QString,QString,QString,QString,QString)),
+            this,SLOT(receiveData(QString,QString,QString,QString,QString)),Qt::QueuedConnection);
+    connect(capturethread,SIGNAL(sendDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),
+            this,SLOT(receiveDetail(QList<QString>,QList<QString>,QList<QString>,QList<QString>)),Qt::QueuedConnection);
+    capturethread = NULL;
 }
 
 void MainWindow::on_treeView_clicked(const QModelIndex &index)
@@ -193,61 +196,56 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index)
             lineNum = index.sibling(index.row(),0).data().toString();
     }
 
+    QStandardItem *item;
+    bool ok;
+    int row = lineNum.toInt(&ok,10)-1;
+    int number = 0;
+    if(row>=1)
+    number = list1[row-1].count();
 
-                    QStandardItem *item;
-                    bool ok;
-                    int row = lineNum.toInt(&ok,10)-1;
-                    int number = 0;
-                    if(row>=1)
-                        number = list1[row-1].count();
+    item = new QStandardItem(list1[row][number]);
+    mainModel2->setItem(0, 0, item);
+    for(int i = number+1; i < list1[row].count(); i++)
+    {
+           QStandardItem *Item1_1 = new QStandardItem(list1[row][i]); //子节点1_1
+           item->appendRow(Item1_1); //添加子节点;
+    }
 
-                    item = new QStandardItem(list1[row][number]);
-                    mainModel2->setItem(0, 0, item);
-                    for(int i = number+1; i < list1[row].count(); i++)
-                    {
-                           QStandardItem *Item1_1 = new QStandardItem(list1[row][i]); //子节点1_1
-                           item->appendRow(Item1_1); //添加子节点;
-                    }
-
-                   if(row>=1)
-                        number = list2[row-1].count();
-
-                   item = new QStandardItem(list2[row][number]);
-                   mainModel2->setItem(1, 0, item);
-                   for(int i = number+1; i < list2[row].count(); i++)
-                   {
-                       QStandardItem *Item1_2 = new QStandardItem(list2[row][i]); //子节点1_2
-                       item->appendRow(Item1_2); //添加子节点;
-                   }
+    if(row>=1)
+    number = list2[row-1].count();
+    item = new QStandardItem(list2[row][number]);
+    mainModel2->setItem(1, 0, item);
+    for(int i = number+1; i < list2[row].count(); i++)
+    {
+           QStandardItem *Item1_2 = new QStandardItem(list2[row][i]); //子节点1_2
+           item->appendRow(Item1_2); //添加子节点;
+    }
 
 
-                   if(row>=1)
-                        number = list3[row-1].count();
+    if(row>=1)
+    number = list3[row-1].count();
+    item = new QStandardItem(list3[row][number]);
 
-                   item = new QStandardItem(list3[row][number]);
-                   mainModel2->setItem(2, 0, item);
-                   for(int i = number+1; i < list3[row].count(); i++)
-                   {
-                       QStandardItem *Item1_3 = new QStandardItem(list3[row][i]); //子节点1_3
-                       item->appendRow(Item1_3); //添加子节点;
-                   }
+    mainModel2->setItem(2, 0, item);
+    for(int i = number+1; i < list3[row].count(); i++)
+    {
+          QStandardItem *Item1_3 = new QStandardItem(list3[row][i]); //子节点1_3
+          item->appendRow(Item1_3); //添加子节点;
+    }
 
+    if(row>=1)
+    number = list4[row-1].count();
+    // 判断是否为ARP
+    if(list4[row].size()!=list4[row-1].size()){
+        item = new QStandardItem(list4[row][number]);
 
-                   if(row>=1)
-                       number = list4[row-1].count();
-                   // 判断是否为ARP
-                   if(list4[row].size()!=list4[row-1].size()){
-                       item = new QStandardItem(list4[row][number]);
-
-                       mainModel2->setItem(3, 0, item);
-                           for(int i = number+1; i < list4[row].count(); i++)
-                           {
-                                QStandardItem *Item1_4 = new QStandardItem(list4[row][i]); //子节点1_4
-                                item->appendRow(Item1_4); //添加子节点;
-                           }
-                    }
-
-
+        mainModel2->setItem(3, 0, item);
+        for(int i = number+1; i < list4[row].count(); i++)
+        {
+             QStandardItem *Item1_4 = new QStandardItem(list4[row][i]); //子节点1_4
+             item->appendRow(Item1_4); //添加子节点;
+        }
+    }
 
 
 //     QString str;

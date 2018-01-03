@@ -221,7 +221,7 @@ QTreeView::item:selected:!active {
       <x>30</x>
       <y>390</y>
       <width>1261</width>
-      <height>201</height>
+      <height>241</height>
      </rect>
     </property>
     <property name="styleSheet">

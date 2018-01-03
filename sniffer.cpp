@@ -47,7 +47,7 @@ bool Sniffer::openNetDev(int devNum){
                                   errbuf            // 错误缓冲池
                                   ) ) == NULL)
         {
-            qDebug() << "\nInterface number out of range.\n";"\nUnable to open the adapter. %s is not supported by WinPcap\n";
+            qDebug() << "\nInterface number out of range.\n";
             /* 释放设备列表 */
             freeDevsMem();
             return -1;
@@ -147,7 +147,6 @@ bool Sniffer::openSavedDumpFile(const char *szFileName,int packNum){
         }
     else {
         openNetDev(source);
-//        return pcap_next_ex( fp, &header, &pkt_data);
         int num = 0;
         if(packNum == 1)
             return pcap_next_ex( fp, &header, &pkt_data);

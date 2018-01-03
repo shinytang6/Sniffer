@@ -37,16 +37,8 @@ void CaptureThread::run(){
     std::cout<<"save file name:"<<(const char *)tempFile.toLocal8Bit()<<endl;
     if(!tempFile.isEmpty() && !loadFile) {
          sniffer->openDumpFile((const char *)tempFile.toLocal8Bit());
-    } else {
-//        std::cout<<"good!!!!!"<<endl;
-////        sniffer->openSavedDumpFile((const char *)tempFile.toLocal8Bit());
-//        isStop = true;
     }
 
-//    if(loadFile){
-//        sniffer->openSavedDumpFile(tempFile.toLocal8Bit());
-//        return;
-//    }
     int packNum = 1;
     while((sniffer->captureOnce() >= 0 && !isStop) || ( sniffer->openSavedDumpFile(tempFile.toLocal8Bit(),packNum)  &&loadFile) ){
         if(!tempFile.isEmpty() && !loadFile)
@@ -205,7 +197,9 @@ void CaptureThread::run(){
                     std::cout<<"lengthaaa:"<<tmpData->strLength<<"\n";
                     std::cout<<"AAAAAAAAA:"<<info_frame_Ip_Hdr.toStdString()<<endl;
                     emit sendDetail(info_frame_bytes_List,info_frame_Eth_Hdr_List,info_frame_Ip_Hdr_List,info_frame_Trans_Layer_List);
-                    emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto), QString::number(cap_length, 10));
+                    emit sendData(QString::fromStdString(tmpData->strTime),QString::fromStdString(tmpData->strSIP),
+                                  QString::fromStdString(tmpData->strDIP),QString::fromStdString(tmpData->strProto),
+                                  QString::number(cap_length, 10));
                     break;
                     }
                 case UDP_SIG:{
@@ -259,7 +253,6 @@ void CaptureThread::run(){
             break;
         }
         case 0x86dd :{
-//            analyze_ipv6(pkt_data,tmpData);
             std::cout<<"protocol: ipv6"<<"\n";
             break;
         }
