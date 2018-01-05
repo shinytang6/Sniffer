@@ -78,7 +78,7 @@ QComboBox::drop-down
 
 /* Define a new custom arrow icon for the combo box */
 QComboBox::down-arrow {
-    image: url(G:/Sniffer/arrow_down.png);
+    image: url(G:/Sniffer/source/arrow_down.png);
 	margin-right: 10px;
     width: 14px;
     height: 14px;
